@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/features/events/events.dart';
+import 'package:sada/features/reviews/screen/reviews.dart';
 import 'package:sada/features/serach/serach.dart';
 import 'package:sada/features/setting/screens/setting.dart';
 
@@ -22,6 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const Events(),
     const Serach(),
     const Setting(),
+    const Reviews(),
   ];
 
   void _onItemTapped(int index) {
@@ -33,9 +35,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: ColorsManager.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: _selectedIndex == 0
           ? null
           : AppBar(
+              backgroundColor: Colors.white,
               title: Image.asset('img/logo.png', width: 100, height: 100, fit: BoxFit.cover),
               centerTitle: true,
               // leading: IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
