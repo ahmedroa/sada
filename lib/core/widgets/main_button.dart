@@ -19,7 +19,7 @@ class MainButton extends StatelessWidget {
     required this.text,
     required this.onTap,
     this.hasCircularBorder = false,
-    this.color = ColorsManager.kPrimaryColor,
+    this.color = ColorsManager.kPrimaryColo,
     this.colortext = Colors.white,
     this.width = double.infinity,
     this.height = 70,
@@ -36,7 +36,7 @@ class MainButton extends StatelessWidget {
       height: height,
       child: Container(
         width: double.infinity,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius), color: Color(0xff0D986A)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(borderRadius), color: color),
         child: MaterialButton(
           onPressed: onTap,
           child: Row(

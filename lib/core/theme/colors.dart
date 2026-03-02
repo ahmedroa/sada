@@ -4,6 +4,7 @@ class ColorsManager {
   static const Color backgroundColor = Color(0xffF7F7F7);
   static const Color backgroundDarkColor = Color(0xff1b1718);
   static const Color kPrimaryColor = Color(0xFF38B2AC);
+  static const Color kPrimaryColo = Color(0xff0D986A);
   static const Color textFormField = Color(0xffF5F5F5);
   static const Color textFormFieldDark = Color(0xFF252525);
   static const Color red = Color(0xFFC71919);

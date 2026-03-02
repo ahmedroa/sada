@@ -1,169 +1,178 @@
 import 'package:flutter/material.dart';
-import 'package:sada/core/theme/colors.dart';
-import 'package:sada/core/utils/card_shape_clipper.dart';
-import 'package:sada/features/live/live_view.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:sada/core/widgets/main_button.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
-
-  static const Color _cardGreen = Color(0xFFE6F5F4);
-  static const Color _darkGreen = Color(0xFF1B5E4A);
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Container(
-        color: ColorsManager.backgroundColor,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: SizedBox(
+        width: double.infinity,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'الصفحه الئيسيه',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Color(0xff0A5E3F)),
+              ),
+            ),
+            Text(
+              'أهلاً',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xff0A5E3F)),
+            ),
+            SizedBox(height: 16),
+            Row(
               children: [
-                _buildHeader(context),
-                _buildTopCard(context),
-                // _buildPlantingCard(context),
-                const SizedBox(height: 24),
+                Icon(Icons.location_on_outlined),
+                SizedBox(width: 16),
+                Text('الرياض, المملكة العربية السعودية'),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(color: ColorsManager.kPrimaryColor, shape: BoxShape.circle),
-                child: const Icon(Icons.person, color: Colors.white, size: 26),
+            SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              height: 300,
+              decoration: BoxDecoration(
+                color: Color(0xffDEEAD8),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(60)),
               ),
-              const Spacer(),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset('img/logo.png', width: 36, height: 36, fit: BoxFit.contain),
-                  const SizedBox(width: 8),
-                  Text(
-                    'SADA',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: _darkGreen),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(width: 1, height: 20, color: _darkGreen.withOpacity(0.5)),
-                  ),
-                  Text(
-                    'سدى',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: _darkGreen),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset('img/aaaa.svg'),
+                                  SizedBox(width: 16),
+                                  Text(
+                                    'حديقة النخيل',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xff0A5E3F),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 16),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(35),
+                                child: Image.asset('img/test.jpg', width: 140, height: 150, fit: BoxFit.cover),
+                              ),
+                              SizedBox(height: 16),
+                              MainButton(text: 'Live view', onTap: () {}, width: 140, height: 40),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              buildItem(title: 'صحة النباتات', value: '70-75%', icon: 'img/Group 174.svg'),
+                              SizedBox(height: 16),
+                              buildItem(title: 'حالة الألعاب', value: 'حالة الالعاب', icon: 'img/Vector (3).svg'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              buildItem(title: 'الشمس', value: 'مشمس  30ْ', icon: 'img/sh.svg'),
+                              SizedBox(height: 16),
+                              buildItem(title: 'نسبة  الإزدحام', value: '30%', icon: 'img/persons.svg'),
+                              SizedBox(height: 16),
+                              buildItem(title: 'استهلاك المياه', value: '80%', icon: 'img/as.svg'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications_outlined, color: ColorsManager.dark, size: 26),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'الصفحة الرئيسية',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: _darkGreen),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'أهلاً',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _darkGreen),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(Icons.location_on, size: 18, color: ColorsManager.dark),
-              const SizedBox(width: 4),
-              Text('سكاكا - اللقائط', style: TextStyle(fontSize: 14, color: ColorsManager.dark)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTopCard(BuildContext context) {
-    return ClipPath(
-      clipper: CardWithConcaveClipper(concaveRadius: 52),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-        decoration: BoxDecoration(
-          color: _cardGreen,
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _metricItem(Icons.wb_sunny_outlined, 'الطقس', 'مشمس 30°'),
-                      const SizedBox(height: 14),
-                      _metricItem(Icons.people_outline, 'نسبة الإزدحام', '30%'),
-                      const SizedBox(height: 14),
-                      _metricItem(Icons.water_drop_outlined, 'استهلاك المياه', '80%'),
-                    ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: double.infinity,
+                height: 180,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  image: DecorationImage(
+                    image: AssetImage('img/photo_1447-09-10 22.04.36.jpeg'),
+                    fit: BoxFit.cover,
+                    opacity: 0.5,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _metricItem(Icons.eco_outlined, 'صحة النباتات', '70-75%'),
-                      const SizedBox(height: 14),
-                      _metricItem(Icons.construction_outlined, 'حالة الألعاب', 'تحت الصيانه'),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
+                child: Column(
+                  children: [
+                    Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ساهم في زرع 1000 نبته \n في حدائق منطقة الجوف',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                        SizedBox(width: 16),
+                        MainButton(
+                          text: 'شارك الآن',
+                          onTap: () {},
+                          width: 140,
+                          height: 40,
+                          color: Color(0xff1B2F29).withOpacity(.8),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.tune, color: ColorsManager.dark, size: 20),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              'حديقة النخيل',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: ColorsManager.dark),
-                              overflow: TextOverflow.ellipsis,
+                          Container(
+                            width: 30,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
                             ),
                           ),
-                          Icon(Icons.notifications_outlined, color: ColorsManager.dark, size: 20),
+                          SizedBox(width: 4),
+                          Container(
+                            width: 30,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          Container(
+                            width: 30,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      _buildParkImage(),
-                      const SizedBox(height: 12),
-                      _buildLiveViewButton(context),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ],
         ),
@@ -171,176 +180,19 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _metricItem(IconData icon, String label, String value) {
-    final isPercent = value.contains('%') && !value.startsWith('تحت');
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Column buildItem({required String title, required String value, required String icon}) {
+    return Column(
       children: [
-        Icon(icon, color: ColorsManager.dark, size: 22),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(fontSize: 12, color: ColorsManager.dark, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: isPercent ? ColorsManager.kPrimaryColor : ColorsManager.dark,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+        SvgPicture.asset(icon),
+        Text(
+          title,
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xff013220)),
+        ),
+        Text(
+          value,
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Color(0xff0D986A)),
         ),
       ],
     );
   }
-
-  Widget _buildParkImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 160,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [const Color(0xFF87CEEB), ColorsManager.green, const Color(0xFF6B8E6B)],
-          ),
-        ),
-        child: Center(child: Icon(Icons.park, size: 48, color: Colors.white.withOpacity(0.9))),
-      ),
-    );
-  }
-
-  Widget _buildLiveViewButton(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LiveView()));
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(color: _darkGreen, borderRadius: BorderRadius.circular(12)),
-          child: const Center(
-            child: Text(
-              'Live View',
-              style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Widget _buildPlantingCard(BuildContext context) {
-  //   return Container(
-  //     margin: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(24),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.08),
-  //           blurRadius: 12,
-  //           offset: const Offset(0, 4),
-  //         ),
-  //       ],
-  //     ),
-  //     child: ClipRRect(
-  //       borderRadius: BorderRadius.circular(24),
-  //       child: Stack(
-  //         children: [
-  //           Container(
-  //             height: 200,
-  //             decoration: BoxDecoration(
-  //               gradient: LinearGradient(
-  //                 begin: Alignment.centerRight,
-  //                 end: Alignment.centerLeft,
-  //                 colors: [
-  //                   Colors.black.withOpacity(0.5),
-  //                   ColorsManager.green.withOpacity(0.7),
-  //                   _darkGreen.withOpacity(0.85),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //           Positioned(
-  //             right: 0,
-  //             top: 0,
-  //             bottom: 0,
-  //             left: 0,
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(20),
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   const SizedBox.shrink(),
-  //                   Text(
-  //                     'ساهم في زرع 1000 نبته في حدائق منطقة الجوف',
-  //                     style: const TextStyle(
-  //                       fontSize: 18,
-  //                       fontWeight: FontWeight.bold,
-  //                       color: Colors.white,
-  //                       height: 1.3,
-  //                     ),
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       Material(
-  //                         color: Colors.transparent,
-  //                         child: InkWell(
-  //                           onTap: () {},
-  //                           borderRadius: BorderRadius.circular(12),
-  //                           child: Container(
-  //                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-  //                             decoration: BoxDecoration(
-  //                               color: ColorsManager.dark.withOpacity(0.85),
-  //                               borderRadius: BorderRadius.circular(12),
-  //                             ),
-  //                             child: const Text(
-  //                               'شارك الآن',
-  //                               style: TextStyle(
-  //                                 color: Colors.white,
-  //                                 fontSize: 15,
-  //                                 fontWeight: FontWeight.w600,
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                       const Spacer(),
-  //                       Row(
-  //                         mainAxisSize: MainAxisSize.min,
-  //                         children: List.generate(5, (i) {
-  //                           return Container(
-  //                             margin: const EdgeInsets.symmetric(horizontal: 2),
-  //                             width: i == 0 ? 20 : 8,
-  //                             height: 4,
-  //                             decoration: BoxDecoration(
-  //                               color: i == 0 ? Colors.white : Colors.white.withOpacity(0.5),
-  //                               borderRadius: BorderRadius.circular(2),
-  //                             ),
-  //                           );
-  //                         }),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

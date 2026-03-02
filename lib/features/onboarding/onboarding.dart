@@ -41,11 +41,14 @@ class Onboarding extends StatelessWidget {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Color(0xff98C13F)),
                   ),
                   SizedBox(height: 70),
-                  MainButton(
-                    text: 'ابدأ',
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: MainButton(
+                      text: 'ابدأ',
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                      },
+                    ),
                   ),
                   Spacer(),
                   Image.asset('img/momah.png', width: 200, height: 200),

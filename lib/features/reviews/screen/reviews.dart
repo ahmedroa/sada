@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sada/core/theme/colors.dart';
-import 'package:sada/features/reviews/reviews.dart';
+import 'package:sada/features/reviews/widget/Initiatives_widget.dart';
 import 'package:sada/features/reviews/widget/description.dart';
 
 class Reviews extends StatefulWidget {
@@ -25,30 +25,6 @@ class _ReviewsState extends State<Reviews> {
             children: [SizedBox(height: 16), _buildPeriodOptions(), SizedBox(height: 16), _buildSelectedContent()],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            padding: const EdgeInsets.only(left: 24, right: 24),
-            height: 40,
-            width: double.infinity,
-            decoration: BoxDecoration(color: Color(0xff0D986A), borderRadius: BorderRadius.circular(16)),
-            child: Row(
-              children: [
-                Icon(Icons.person_add_rounded, color: Colors.white, size: 20),
-                SizedBox(width: 16),
-                Text(
-                  'كم صديق معك اليوم؟',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                Spacer(),
-                Text(
-                  '0',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -61,7 +37,7 @@ class _ReviewsState extends State<Reviews> {
         );
       case 1:
         return Description();
-      case 2: // الفعاليات
+      case 2:
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -101,48 +77,8 @@ class _ReviewsState extends State<Reviews> {
             }),
           ),
         );
-      case 3: // المبادرات
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: List.generate(3, (i) {
-              final initiatives = [
-                {'title': 'مبادرة تنظيف الحديقة', 'members': '٢٤ مشارك', 'color': Color(0xff4CAF50)},
-                {'title': 'زراعة ١٠٠٠ شجرة', 'members': '٥٨ مشارك', 'color': Color(0xff2196F3)},
-                {'title': 'توفير مظلات للزوار', 'members': '١٢ مشارك', 'color': Color(0xffFF9800)},
-              ];
-              return Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: (initiatives[i]['color'] as Color).withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: (initiatives[i]['color'] as Color).withOpacity(0.3)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.volunteer_activism, color: initiatives[i]['color'] as Color, size: 28),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            initiatives[i]['title'] as String,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 4),
-                          Text(initiatives[i]['members'] as String, style: TextStyle(fontSize: 12, color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-                    Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-                  ],
-                ),
-              );
-            }),
-          ),
-        );
+      case 3:
+        return InitiativesWidget();
       default:
         return SizedBox.shrink();
     }

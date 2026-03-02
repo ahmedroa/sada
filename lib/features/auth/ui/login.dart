@@ -4,6 +4,7 @@ import 'package:sada/core/widgets/curved_top_widget.dart';
 import 'package:sada/core/widgets/app_text_form_field.dart';
 import 'package:sada/core/widgets/main_button.dart';
 import 'package:sada/features/auth/register/register.dart';
+import 'package:sada/features/home/widgets/bottom_nav_bar.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -80,7 +81,12 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  MainButton(text: 'تسجيل الدخول', onTap: () {}),
+                  MainButton(
+                    text: 'تسجيل الدخول',
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+                    },
+                  ),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
