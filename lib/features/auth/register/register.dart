@@ -206,15 +206,15 @@ class _RegisterState extends State<Register> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'ليس لديك حساب؟',
+                        'لديك حساب؟',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: ColorsManager.gray),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Register()));
+                          Navigator.pop(context);
                         },
                         child: Text(
-                          'تسجيل',
+                          'تسجيل الدخول',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,

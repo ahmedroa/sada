@@ -10,7 +10,7 @@ class ComplaintsScreen extends StatefulWidget {
 }
 
 class _ComplaintsScreenState extends State<ComplaintsScreen> {
-  int _selectedType = 0; // 0 = إقتراح, 1 = شكوى
+  int _selectedType = 0; 
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -22,7 +22,6 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
   String? _attachedFileName;
 
   static const _kGreen = Color(0xff0D986A);
-  static const _kLightGreen = Color(0xffE8F5EE);
 
   @override
   void dispose() {
@@ -36,7 +35,6 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      // TODO: إرسال البيانات للداتابيس
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('تم الإرسال بنجاح'), backgroundColor: _kGreen));
@@ -129,7 +127,6 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
   }
 
   Widget _typeButton(String label, int index) {
-    final isSelected = _selectedType == index;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _selectedType = index),

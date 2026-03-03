@@ -6,6 +6,7 @@ import 'package:sada/features/home/screen/home.dart';
 import 'package:sada/features/reviews/screen/reviews.dart';
 import 'package:sada/features/serach/serach.dart';
 import 'package:sada/features/setting/screens/setting.dart';
+import 'package:sada/features/sustainability/sustainability_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -19,10 +20,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const Home(),
-    const Events(),
+    // const SustainabilityScreen(),
+    const SustainabilityScreen(),
     const Serach(),
-    const Setting(),
     const Reviews(),
+    const Events(),
   ];
 
   void _onItemTapped(int index) {
@@ -37,14 +39,27 @@ class _BottomNavBarState extends State<BottomNavBar> {
       // backgroundColor: ColorsManager.backgroundColor,
       backgroundColor: Colors.white,
       appBar: AppBar(
-              backgroundColor: Colors.white,
-              title: Image.asset('img/logo.png', width: 100, height: 100, fit: BoxFit.cover),
-              centerTitle: true,
-              // leading: IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
-              // leading: SvgPicture.asset('img/notifications.svg', width: 24, height: 24),
-              // actions: [IconButton(onPressed: () {}, icon: Icon(Icons.notifications))],
-              leading: IconButton(onPressed: () {}, icon: Icon(Icons.notification_add_outlined)),
+        backgroundColor: Colors.white,
+        title: Image.asset('img/logo.png', width: 100, height: 100, fit: BoxFit.cover),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Setting()));
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(color: ColorsManager.kPrimaryColo, borderRadius: BorderRadius.circular(24)),
+                child: Icon(Icons.person, color: Colors.white, size: 24),
+              ),
+            ),
           ),
+        ],
+        leading: IconButton(onPressed: () {}, icon: Icon(Icons.notification_add_outlined)),
+      ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

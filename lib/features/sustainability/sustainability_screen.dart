@@ -48,26 +48,12 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsManager.backgroundColor,
-      appBar: _buildAppBar(),
       body: Column(
         children: [
           _buildTabs(),
           Expanded(child: _selectedTab == 0 ? _buildRatingTab() : _buildIndicatorsTab()),
         ],
       ),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      centerTitle: true,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: Image.asset('img/logo.png', width: 80, height: 80, fit: BoxFit.contain),
     );
   }
 

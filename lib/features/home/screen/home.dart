@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sada/core/widgets/main_button.dart';
+import 'package:sada/features/live/live_view.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -72,7 +73,15 @@ class Home extends StatelessWidget {
                                 child: Image.asset('img/test.jpg', width: 140, height: 150, fit: BoxFit.cover),
                               ),
                               SizedBox(height: 16),
-                              MainButton(text: 'Live view', onTap: () {}, width: 140, height: 40),
+                              SizedBox(width: 140, height: 40),
+                              // MainButton(
+                              //   text: 'Live view',
+                              //   onTap: () {
+                              //     Navigator.push(context, MaterialPageRoute(builder: (context) => LiveView()));
+                              //   },
+                              //   width: 140,
+                              //   height: 40,
+                              // ),
                             ],
                           ),
                         ),
