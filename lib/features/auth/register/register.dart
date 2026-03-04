@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/app_text_form_field.dart';
 import 'package:sada/core/widgets/curved_top_widget.dart';
@@ -48,6 +49,14 @@ class _RegisterState extends State<Register> {
                     validator: (String? p1) {
                       return null;
                     },
+                  ),
+                  SizedBox(height: 20),
+                  AppTextFormField(
+                    hintText: 'رقم الجوال',
+                    validator: (String? p1) {
+                      return null;
+                    },
+                    keyboardType: TextInputType.phone,
                   ),
                   SizedBox(height: 20),
                   AppTextFormField(
