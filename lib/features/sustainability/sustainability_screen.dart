@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/main_button.dart';
+import 'package:sada/features/sustainability/indicators_screen.dart';
 
 class SustainabilityScreen extends StatefulWidget {
   const SustainabilityScreen({super.key});
@@ -12,7 +13,7 @@ class SustainabilityScreen extends StatefulWidget {
 class _SustainabilityScreenState extends State<SustainabilityScreen> {
   int _selectedTab = 0;
   String _selectedGarden = 'حديقة الخزامى';
-  final Set<int> _expandedSections = {0, 1, 2};
+  final Set<int> _expandedSections = {};
 
   final List<String> _gardens = ['حديقة الخزامى', 'حديقة النخيل', 'حديقة الورود'];
 
@@ -51,7 +52,7 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       body: Column(
         children: [
           _buildTabs(),
-          Expanded(child: _selectedTab == 0 ? _buildRatingTab() : _buildIndicatorsTab()),
+          Expanded(child: _selectedTab == 0 ? _buildRatingTab() : IndicatorsContent()),
         ],
       ),
     );
@@ -101,7 +102,7 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-          child: Text('ساهم في تحسين مؤشرات الإستدامة', style: TextStyle(fontSize: 13, color: ColorsManager.gray)),
+          child: Text('ساهم في تحسين مؤشرات الإستدامة', style: TextStyle(fontSize: 13, color: ColorsManager.primary)),
         ),
         _buildGardenDropdown(),
         const SizedBox(height: 8),
@@ -215,13 +216,13 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
           Row(
             children: List.generate(5, (i) {
               final value = i + 1;
-              final isSelected = selected == value;
+              final isSelected = value <= selected;
               return GestureDetector(
                 onTap: () => setState(() => _ratings[sectionIndex][itemIndex] = value),
                 child: Container(
                   margin: const EdgeInsets.only(left: 6),
-                  width: 22,
-                  height: 22,
+                  width: 26,
+                  height: 26,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isSelected ? const Color(0xff0D986A) : Colors.transparent,
@@ -230,7 +231,15 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
                       width: 1.5,
                     ),
                   ),
-                  child: isSelected ? const Icon(Icons.check, size: 12, color: Colors.white) : null,
+                  alignment: Alignment.center,
+                  child: Text(
+                    '$value',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : ColorsManager.gray,
+                    ),
+                  ),
                 ),
               );
             }),
@@ -240,11 +249,7 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
     );
   }
 
-  Widget _buildIndicatorsTab() {
-    return const Center(
-      child: Text('مؤشرات الإستدامة', style: TextStyle(fontSize: 16, color: Colors.grey)),
-    );
-  }
+
 }
 
 class _RatingSection {

@@ -41,12 +41,17 @@ class MainButton extends StatelessWidget {
           onPressed: onTap,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                text,
-                style: TextStyle(color: colortext, fontSize: fontSize, fontWeight: fontWeight),
+              if (icon != null) ...[icon!, const SizedBox(width: 6)],
+              Flexible(
+                child: Text(
+                  text,
+                  style: TextStyle(color: colortext, fontSize: fontSize, fontWeight: fontWeight),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
-              if (icon != null) ...[icon!, const SizedBox(width: 8)],
             ],
           ),
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sada/core/theme/colors.dart';
+import 'package:sada/features/chats/shats.dart';
 import 'package:sada/features/events/events.dart';
 import 'package:sada/features/home/screen/home.dart';
-import 'package:sada/features/reviews/screen/reviews.dart';
 import 'package:sada/features/serach/serach.dart';
 import 'package:sada/features/setting/screens/setting.dart';
 import 'package:sada/features/sustainability/sustainability_screen.dart';
@@ -23,7 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // const SustainabilityScreen(),
     const SustainabilityScreen(),
     const Serach(),
-    const Reviews(),
+    const Shats(),
     const Events(),
   ];
 
@@ -38,7 +38,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
       // backgroundColor: ColorsManager.backgroundColor,
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: _selectedIndex == 3 ? null : AppBar(
         backgroundColor: Colors.white,
         title: Image.asset('img/logo.png', width: 100, height: 100, fit: BoxFit.cover),
         centerTitle: true,
@@ -124,7 +124,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         : null,
                   ),
                   padding: const EdgeInsets.only(bottom: 4),
-                  child: Image.asset('img/qq.png', width: 40, height: 40),
+                  child: Image.asset('img/qq.png', width: 40, height: 40,
+                    fit: BoxFit.cover,),
                 ),
                 label: '',
               ),

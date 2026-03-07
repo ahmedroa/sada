@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sada/core/widgets/main_button.dart';
-import 'package:sada/features/live/live_view.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -121,7 +120,7 @@ class Home extends StatelessWidget {
                   image: DecorationImage(
                     image: AssetImage('img/photo_1447-09-10 22.04.36.jpeg'),
                     fit: BoxFit.cover,
-                    opacity: 0.5,
+                    opacity: 0.69,
                   ),
                 ),
                 child: Column(
@@ -132,7 +131,7 @@ class Home extends StatelessWidget {
                       children: [
                         Text(
                           'ساهم في زرع 1000 نبته \n في حدائق منطقة الجوف',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100]),
                         ),
                         SizedBox(width: 16),
                         MainButton(

@@ -6,7 +6,7 @@ import 'package:sada/features/auth/ui/login.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +27,7 @@ class Onboarding extends StatelessWidget {
                     children: [
                       Text(
                         ' سَدَى',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff98C13F)),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: ColorsManager.primary),
                       ),
                       Text(
                         ' | SADA   ',
@@ -38,7 +38,7 @@ class Onboarding extends StatelessWidget {
                   SizedBox(height: 10),
                   Text(
                     'سَدَى..نسيجُ الحدائق المستدام',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Color(0xff98C13F)),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: ColorsManager.primary),
                   ),
                   SizedBox(height: 70),
                   Padding(

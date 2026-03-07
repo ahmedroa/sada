@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/curved_top_widget.dart';
 import 'package:sada/features/chats/chat_screen.dart';
 
@@ -58,7 +59,7 @@ class Shats extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 'سَليل ، خبيرك الأخضر ! يختصر لك البحث ويأخذك لأجمل المساحات الخضراء ..',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xff98C13F)),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: ColorsManager.primary),
                 textAlign: TextAlign.center,
               ),
             ),

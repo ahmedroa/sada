@@ -16,12 +16,12 @@ class Description extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'حديقة الخزامى 🌿🌸',
+                'حديقة الخزامى ',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               SizedBox(height: 8),
               Text(
-                ' واحة طبيعية تجمع بين المساحات الخضراء، ممرات المشي، وأزهار الخزامى العطرة. المكان المثالي للاسترخاء، التنزه، والاستمتاع بالهواء النقي! ✨',
+                ' واحة طبيعية تجمع بين المساحات الخضراء، ممرات المشي، وأزهار الخزامى العطرة. المكان المثالي للاسترخاء، التنزه، والاستمتاع بالهواء النقي! ',
                 style: TextStyle(fontSize: 13, color: Colors.white, height: 1.6),
               ),
               SizedBox(height: 12),

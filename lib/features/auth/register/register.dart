@@ -156,7 +156,30 @@ class _RegisterState extends State<Register> {
 
                   SizedBox(height: 20),
                   MainButton(text: 'تسجيل', onTap: () {}),
-                  SizedBox(height: 30),
+                    SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'لديك حساب؟',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: ColorsManager.gray),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'تسجيل الدخول',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: ColorsManager.kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // SizedBox(height: 30),
 
                   // Or sign up with
                   Row(
@@ -210,29 +233,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'لديك حساب؟',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: ColorsManager.gray),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'تسجيل الدخول',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: ColorsManager.kPrimaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                
                 ],
               ),
             ),
