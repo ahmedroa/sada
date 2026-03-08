@@ -14,6 +14,7 @@ class Home extends StatelessWidget {
         child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 16),
             Align(
               alignment: Alignment.center,
               child: Text(

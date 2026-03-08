@@ -23,6 +23,8 @@ class _SerachState extends State<Serach> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+                        SizedBox(height: 16),
+
             AppTextFormField(
               hintText: 'البحث',
               validator: (String? value) {
@@ -48,10 +50,32 @@ class _SerachState extends State<Serach> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: List.generate(4, (_) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: buildItem(),
-                  )),
+                  children: 
+                  [
+                    buildItem(
+                      name: 'حديقة النخيل',
+                      location: 'الاقرب',
+                      image: 'img/test.jpg',
+                    ),
+                    SizedBox(height: 16),
+                    buildItem(
+                      name: 'حديقة الخزامى',
+                      location: 'الاقرب',
+                      image: 'img/Group 6265788.png',
+                    ),
+                    SizedBox(height: 16),
+                    buildItem(
+                      name: 'حديقة العزيزية',
+                      location: 'الاقرب',
+                      image: 'img/5345.png',
+                    ),
+                    SizedBox(height: 16),
+                    buildItem(
+                      name: 'حديقة المبخرة',
+                      location: 'الاقرب',
+                      image: 'img/9843.png',
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -61,20 +85,24 @@ class _SerachState extends State<Serach> {
     );
   }
 
-  Row buildItem() {
+  Row buildItem({
+    required String name,
+    required String location,
+    required String image,
+  }) {
     return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset('img/test.jpg', width: 100, height: 100, fit: BoxFit.cover),
+                child: Image.asset(image, width: 100, height: 100, fit: BoxFit.cover),
               ),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('حديقة النخيل', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                  Text('الاقرب', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                  Text(name, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  Text(location, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
                 ],
               ),
               SizedBox(width: 10),

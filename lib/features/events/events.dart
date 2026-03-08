@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sada/features/events/widgets/events_list_tab.dart';
 import 'package:sada/features/events/widgets/events_tab_bar.dart';
-import 'package:sada/features/events/widgets/friends_tab.dart';
 import 'package:sada/features/events/widgets/garden_description_tab.dart';
 import 'package:sada/features/events/widgets/initiatives_tab.dart';
 import 'package:sada/features/onboarding/reviews.dart';
@@ -38,6 +36,8 @@ class _EventsState extends State<Events> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+                      SizedBox(height: 16),
+
           EventsTabBar(
             periods: _periods,
             selectedIndex: _selectedIndex,

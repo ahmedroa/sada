@@ -48,9 +48,11 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorsManager.backgroundColor,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
+                      SizedBox(height: 16),
+
           _buildTabs(),
           Expanded(child: _selectedTab == 0 ? _buildRatingTab() : IndicatorsContent()),
         ],
