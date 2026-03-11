@@ -1,9 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sada/core/widgets/main_button.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  String _locationText = 'جاري تحديد الموقع...';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLocation();
+  }
+
+  Future<void> _fetchLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() => _locationText = 'خدمة الموقع معطلة');
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() => _locationText = 'لم يتم منح إذن الموقع');
+          return;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        setState(() => _locationText = 'الموقع محظور، يرجى تفعيله من الإعدادات');
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.low,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      ).timeout(const Duration(seconds: 8));
+
+      if (placemarks.isNotEmpty && mounted) {
+        final p = placemarks.first;
+        final isSaudi = p.isoCountryCode == 'SA';
+
+        if (!isSaudi) {
+          setState(() => _locationText = 'سكاكا، المملكة العربية السعودية');
+        } else {
+          final city = p.locality?.isNotEmpty == true
+              ? p.locality!
+              : p.subAdministrativeArea ?? '';
+          setState(() => _locationText = '$city، المملكة العربية السعودية');
+        }
+      }
+    } catch (_) {
+      if (mounted) setState(() => _locationText = 'تعذر تحديد الموقع');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +78,6 @@ class Home extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 16),
             Align(
@@ -30,8 +95,13 @@ class Home extends StatelessWidget {
             Row(
               children: [
                 Icon(Icons.location_on_outlined),
-                SizedBox(width: 16),
-                Text('الرياض, المملكة العربية السعودية'),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    _locationText,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
 

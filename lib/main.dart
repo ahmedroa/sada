@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sada/features/home/widgets/bottom_nav_bar.dart';
 import 'package:sada/features/onboarding/onboarding.dart';
 
 void main() {
@@ -22,10 +23,12 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
 
-      home: const Onboarding(),
-      // home: const BottomNavBar(),
+      // home: const Onboarding(),
+      home: const BottomNavBar(),
     );
   }
 }

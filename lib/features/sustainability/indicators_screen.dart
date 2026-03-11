@@ -157,19 +157,7 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
         // badge left edge: ends where fill ends, clamped so it stays inside
         final badgeLeft = (filledWidth - badgeWidth).clamp(0.0, totalWidth - badgeWidth);
 
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onHorizontalDragUpdate: (details) {
-            final box = context.findRenderObject() as RenderBox;
-            final dx = box.globalToLocal(details.globalPosition).dx;
-            final newScore = (dx / totalWidth * 10).clamp(0.0, 10.0);
-            setState(() => _scores[label] = double.parse(newScore.toStringAsFixed(1)));
-          },
-          onTapDown: (details) {
-            final newScore = (details.localPosition.dx / totalWidth * 10).clamp(0.0, 10.0);
-            setState(() => _scores[label] = double.parse(newScore.toStringAsFixed(1)));
-          },
-          child: SizedBox(
+        return SizedBox(
             height: barHeight,
             child: Stack(
               children: [
@@ -219,7 +207,6 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
                 ),
               ],
             ),
-          ),
         );
       },
     );

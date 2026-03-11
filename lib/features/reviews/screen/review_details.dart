@@ -8,16 +8,27 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back_ios_new)),
+        backgroundColor: Colors.white,
+
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios_new),
+        ),
         actions: [
           // IconButton(onPressed: () {}, icon: Icon(Icons.)),
-          Padding(padding: const EdgeInsets.only(left: 16), child: SvgPicture.asset('img/minu.svg')),
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: SvgPicture.asset('img/minu.svg'),
+          ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 26, right: 26),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -29,9 +40,15 @@ class ProfileScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),
-                        border: Border.all(color: ColorsManager.kPrimaryColor, width: 8),
+                        border: Border.all(
+                          color: ColorsManager.kPrimaryColor,
+                          width: 8,
+                        ),
                       ),
-                      child: Padding(padding: const EdgeInsets.all(8.0), child: Icon(Icons.person)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.person),
+                      ),
                     ),
                     SizedBox(height: 10),
                     Container(
@@ -44,7 +61,11 @@ class ProfileScreen extends StatelessWidget {
                       child: Center(
                         child: Text(
                           'متابعة',
-                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -61,7 +82,11 @@ class ProfileScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'مشاركة',
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -76,33 +101,35 @@ class ProfileScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'الاسم',
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(right: 18, left: 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'مبادرتي',
-                    style: TextStyle(color: Color(0xff0B6C48), fontSize: 16, fontWeight: FontWeight.bold),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'مبادرتي',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff0B6C48),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 50),
-                    child: Text(
-                      'منذ 1 ساعة',
-                      style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  buildItem(),
-                  Container(width: double.infinity, height: 1, color: Colors.grey),
-                ],
-              ),
+                ),
+                SizedBox(height: 10),
+                buildItem(),
+                Divider(color: Colors.black, height: 1, thickness: 1),
+                buildVisits(),
+              ],
             ),
           ],
         ),
@@ -110,18 +137,115 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Row buildItem() {
-    return Row(
-      children: [
-        Image.asset('img/image 5.png', width: 100, height: 100, fit: BoxFit.cover),
-
-        Expanded(
-          child: Text(
-            ' قمت بتجديد التربة لحدائق المروج خلال حملة التحديات البيئية🌿',
-            style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.bold),
+  Widget buildItem() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 24),
+            child: Row(
+              children: [
+                Text(
+                  'منذ 3 ساعة',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff000000).withOpacity(.5),
+                  ),
+                ),
+                Spacer(),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xff000000).withOpacity(.5),
+                  size: 16,
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'img/9843.png',
+                  width: 120,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(width: 10),
+
+              Expanded(
+                child: Text(
+                  ' قمت بتجديد التربة لحدائق المروج خلال حملة التحديات',
+                  style: TextStyle(
+                    color: Color(0xff000000).withOpacity(.5),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
+}
+
+Widget buildVisits() {
+  return Padding(
+    padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 24),
+          child: Row(
+            children: [
+              Text(
+                'منذ 3 ساعة',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff000000).withOpacity(.5),
+                ),
+              ),
+              Spacer(),
+              Icon(
+                Icons.arrow_drop_down,
+                color: Color(0xff000000).withOpacity(.5),
+                size: 16,
+              ),
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                'img/9843.png',
+                width: 120,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(width: 10),
+
+            Expanded(
+              child: Text(
+                ' قمت بتجديد التربة لحدائق المروج خلال حملة التحديات',
+                style: TextStyle(
+                  color: Color(0xff000000).withOpacity(.5),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

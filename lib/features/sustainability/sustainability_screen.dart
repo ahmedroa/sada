@@ -11,24 +11,43 @@ class SustainabilityScreen extends StatefulWidget {
 }
 
 class _SustainabilityScreenState extends State<SustainabilityScreen> {
-  int _selectedTab = 0;
+  int _selectedTab = 1;
   String _selectedGarden = 'حديقة الخزامى';
   final Set<int> _expandedSections = {};
 
-  final List<String> _gardens = ['حديقة الخزامى', 'حديقة النخيل', 'حديقة الورود'];
+  final List<String> _gardens = [
+    'حديقة الخزامى',
+    'حديقة النخيل',
+    'حديقة الورود',
+  ];
 
   final List<_RatingSection> _sections = [
     _RatingSection(
       title: 'الإستدامة المجتمعية',
-      items: ['تنوع الأنشطة المجتمعية', 'مستوى التفاعل والحضور', 'المبادرات التطوعية', 'مستوى الأمان'],
+      items: [
+        'تنوع الأنشطة المجتمعية',
+        'مستوى التفاعل والحضور',
+        'المبادرات التطوعية',
+        'مستوى الأمان',
+      ],
     ),
     _RatingSection(
       title: 'الصيانة الدورية',
-      items: ['نظافة المرافق العامة', 'الحالة العامة للحديقة', 'سلامة مناطق اللعب', 'الإضاءة الليلية'],
+      items: [
+        'نظافة المرافق العامة',
+        'الحالة العامة للحديقة',
+        'سلامة مناطق اللعب',
+        'الإضاءة الليلية',
+      ],
     ),
     _RatingSection(
       title: 'الأشجار والمساحات الخضراء',
-      items: ['تنوع النباتات', 'العناية بالنباتات', 'كثافة الأشجار', 'نظافة المساحات الخضراء'],
+      items: [
+        'تنوع النباتات',
+        'العناية بالنباتات',
+        'كثافة الأشجار',
+        'نظافة المساحات الخضراء',
+      ],
     ),
   ];
 
@@ -38,7 +57,9 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
   @override
   void initState() {
     super.initState();
-    _ratings = _sections.map((s) => List<int>.filled(s.items.length, 0)).toList();
+    _ratings = _sections
+        .map((s) => List<int>.filled(s.items.length, 0))
+        .toList();
   }
 
   void _onSubmit() {
@@ -51,10 +72,12 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-                      SizedBox(height: 16),
+          SizedBox(height: 16),
 
           _buildTabs(),
-          Expanded(child: _selectedTab == 0 ? _buildRatingTab() : IndicatorsContent()),
+          Expanded(
+            child: _selectedTab == 0 ? _buildRatingTab() : IndicatorsContent(),
+          ),
         ],
       ),
     );
@@ -67,7 +90,11 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [_buildTabItem('مؤشرات الإستدامة', 1), const SizedBox(width: 8), _buildTabItem('تقييم الحدائق', 0)],
+        children: [
+          _buildTabItem('مؤشرات الإستدامة', 1),
+          const SizedBox(width: 8),
+          _buildTabItem('تقييم الحدائق', 0),
+        ],
       ),
     );
   }
@@ -104,7 +131,10 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-          child: Text('ساهم في تحسين مؤشرات الإستدامة', style: TextStyle(fontSize: 13, color: ColorsManager.primary)),
+          child: Text(
+            'ساهم في تحسين مؤشرات الإستدامة',
+            style: TextStyle(fontSize: 13, color: ColorsManager.primary),
+          ),
         ),
         _buildGardenDropdown(),
         const SizedBox(height: 8),
@@ -112,13 +142,19 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
           child: ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 100),
             itemCount: _sections.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            separatorBuilder: (_, _) => const SizedBox(height: 10),
             itemBuilder: (context, index) => _buildSection(index),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 30),
-          child: MainButton(text: 'إرسال', onTap: _onSubmit, width: 130, height: 35, borderRadius: 30),
+          child: MainButton(
+            text: 'إرسال',
+            onTap: _onSubmit,
+            width: 130,
+            height: 35,
+            borderRadius: 30,
+          ),
         ),
       ],
     );
@@ -141,10 +177,19 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
               child: DropdownButton<String>(
                 value: _selectedGarden,
                 isDense: true,
-                icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.black54,
+                ),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
                 onChanged: (val) => setState(() => _selectedGarden = val!),
-                items: _gardens.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
+                items: _gardens
+                    .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                    .toList(),
               ),
             ),
           ],
@@ -161,13 +206,21 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       decoration: BoxDecoration(
         color: Color(0xffDEEAD8),
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
           GestureDetector(
             onTap: () => setState(() {
-              isExpanded ? _expandedSections.remove(sectionIndex) : _expandedSections.add(sectionIndex);
+              isExpanded
+                  ? _expandedSections.remove(sectionIndex)
+                  : _expandedSections.add(sectionIndex);
             }),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -182,11 +235,17 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
                 children: [
                   Text(
                     section.title,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                   Spacer(),
                   Icon(
-                    isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
                     color: const Color(0xff0D986A),
                   ),
                 ],
@@ -197,7 +256,10 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Column(
-                children: List.generate(section.items.length, (itemIndex) => _buildRatingRow(sectionIndex, itemIndex)),
+                children: List.generate(
+                  section.items.length,
+                  (itemIndex) => _buildRatingRow(sectionIndex, itemIndex),
+                ),
               ),
             ),
         ],
@@ -214,22 +276,30 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 13, color: Colors.black87)),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13, color: Colors.black87),
+          ),
           Row(
             children: List.generate(5, (i) {
               final value = i + 1;
               final isSelected = value <= selected;
               return GestureDetector(
-                onTap: () => setState(() => _ratings[sectionIndex][itemIndex] = value),
+                onTap: () =>
+                    setState(() => _ratings[sectionIndex][itemIndex] = value),
                 child: Container(
                   margin: const EdgeInsets.only(left: 6),
                   width: 26,
                   height: 26,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? const Color(0xff0D986A) : Colors.transparent,
+                    color: isSelected
+                        ? const Color(0xff0D986A)
+                        : Colors.transparent,
                     border: Border.all(
-                      color: isSelected ? const Color(0xff0D986A) : ColorsManager.lightGray,
+                      color: isSelected
+                          ? const Color(0xff0D986A)
+                          : ColorsManager.lightGray,
                       width: 1.5,
                     ),
                   ),
@@ -250,8 +320,6 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
       ),
     );
   }
-
-
 }
 
 class _RatingSection {
