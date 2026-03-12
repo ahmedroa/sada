@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/features/chats/shats.dart';
 import 'package:sada/features/events/events.dart';
+import 'package:sada/features/events/widgets/initiatives_tab.dart';
 import 'package:sada/features/home/screen/home.dart';
 import 'package:sada/features/serach/serach.dart';
 import 'package:sada/features/setting/screens/setting.dart';
@@ -58,7 +59,23 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
           ),
         ],
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.notification_add_outlined)),
+        leading: ValueListenableBuilder<bool>(
+          valueListenable: InitiativesTab.inDetail,
+          builder: (context, inDetail, _) {
+            if (inDetail && _selectedIndex == 4) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+                onPressed: () {
+                  InitiativesTab.inDetail.value = false;
+                },
+              );
+            }
+            return IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.notification_add_outlined),
+            );
+          },
+        ),
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(

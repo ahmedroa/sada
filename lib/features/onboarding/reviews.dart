@@ -74,7 +74,10 @@ class _ReviewsState extends State<Reviews> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProfileScreen()),
+            MaterialPageRoute(
+              builder: (context) =>
+                  ProfileScreen(name: name, img: img, time: time),
+            ),
           );
         },
         child: Row(

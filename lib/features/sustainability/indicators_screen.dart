@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:sada/core/theme/colors.dart';
 
 const _kGreen = Color(0xff0D986A);
 
@@ -12,18 +11,36 @@ class IndicatorsContent extends StatefulWidget {
 }
 
 class _IndicatorsContentState extends State<IndicatorsContent> {
-  String? _selectedGarden;
+  String _selectedGarden = 'حديقة الخزامى';
 
   static const _gardens = ['حديقة الخزامى', 'حديقة النخيل', 'حديقة الورود'];
 
-  static const _indicatorLabels = ['المشاركة المجتمعية', 'الصيانة الدورية', 'الأشجار والمساحات الخضراء'];
+  static const _indicatorLabels = [
+    'المشاركة المجتمعية',
+    'الصيانة الدورية',
+    'الأشجار والمساحات الخضراء',
+  ];
 
-  // القيم القابلة للتعديل — ستُرسل للداتابيس لاحقاً
-  final Map<String, double> _scores = {
-    'المشاركة المجتمعية': 9.7,
-    'الصيانة الدورية': 10.0,
-    'الأشجار والمساحات الخضراء': 9.9,
+  // قيم مختلفة لكل حديقة
+  static const _gardenScores = <String, Map<String, double>>{
+    'حديقة الخزامى': {
+      'المشاركة المجتمعية': 9.7,
+      'الصيانة الدورية': 10.0,
+      'الأشجار والمساحات الخضراء': 9.9,
+    },
+    'حديقة النخيل': {
+      'المشاركة المجتمعية': 8.2,
+      'الصيانة الدورية': 7.5,
+      'الأشجار والمساحات الخضراء': 8.8,
+    },
+    'حديقة الورود': {
+      'المشاركة المجتمعية': 6.4,
+      'الصيانة الدورية': 9.1,
+      'الأشجار والمساحات الخضراء': 7.3,
+    },
   };
+
+  Map<String, double> get _scores => _gardenScores[_selectedGarden]!;
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +69,17 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
       children: const [
         Text(
           'مؤشرات إستدامة الحدائق',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xff1A3C2E)),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff1A3C2E),
+          ),
         ),
         SizedBox(height: 6),
-        Text('تقييم الأداء البيئي والإجتماعي', style: TextStyle(fontSize: 18, color: Color(0xff224214))),
+        Text(
+          'تقييم الأداء البيئي والإجتماعي',
+          style: TextStyle(fontSize: 18, color: Color(0xff224214)),
+        ),
       ],
     );
   }
@@ -67,19 +91,19 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        decoration: BoxDecoration(color: const Color(0xffF0EEF8), borderRadius: BorderRadius.circular(30)),
+        decoration: BoxDecoration(
+          color: const Color(0xffF0EEF8),
+          borderRadius: BorderRadius.circular(30),
+        ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: _selectedGarden,
             isExpanded: true,
-            hint: const Text(
-              'اختر الحديقة',
-              textAlign: TextAlign.right,
-              style: TextStyle(color: ColorsManager.gray, fontSize: 14),
-            ),
             icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
             style: const TextStyle(fontSize: 14, color: Colors.black87),
-            onChanged: (val) => setState(() => _selectedGarden = val),
+            onChanged: (val) {
+              if (val != null) setState(() => _selectedGarden = val);
+            },
             items: _gardens
                 .map(
                   (g) => DropdownMenuItem(
@@ -109,7 +133,11 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
   Widget _buildIndicatorList() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(children: _indicatorLabels.map((label) => _buildIndicatorRow(label)).toList()),
+      child: Column(
+        children: _indicatorLabels
+            .map((label) => _buildIndicatorRow(label))
+            .toList(),
+      ),
     );
   }
 
@@ -124,7 +152,11 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 10),
           Stack(
@@ -135,7 +167,9 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
                 Positioned(
                   bottom: 36,
                   left: 40,
-                  child: _buildSpeechBubble('مكان مريح\nوجاهز لك!\nتجربة مربحة\nبنتظارك!!'),
+                  child: _buildSpeechBubble(
+                    'مكان مريح\nوجاهز لك!\nتجربة مربحة\nبنتظارك!!',
+                  ),
                 ),
             ],
           ),
@@ -155,58 +189,77 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
         final totalWidth = constraints.maxWidth;
         final filledWidth = (score / 10.0) * totalWidth;
         // badge left edge: ends where fill ends, clamped so it stays inside
-        final badgeLeft = (filledWidth - badgeWidth).clamp(0.0, totalWidth - badgeWidth);
+        final badgeLeft = (filledWidth - badgeWidth).clamp(
+          0.0,
+          totalWidth - badgeWidth,
+        );
 
         return SizedBox(
-            height: barHeight,
-            child: Stack(
-              children: [
-                // ── Track background ──────────────────────────────────────
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: verticalPad,
-                  height: trackHeight,
-                  child: Container(
-                    decoration: BoxDecoration(color: const Color(0xffE8F5EE), borderRadius: BorderRadius.circular(30)),
+          height: barHeight,
+          child: Stack(
+            children: [
+              // ── Track background ──────────────────────────────────────
+              Positioned(
+                left: 0,
+                right: 0,
+                top: verticalPad,
+                height: trackHeight,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xffE8F5EE),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                // ── Filled portion ────────────────────────────────────────
-                Positioned(
-                  left: 0,
-                  top: verticalPad,
-                  height: trackHeight,
-                  width: filledWidth.clamp(0.0, totalWidth),
-                  child: Container(
-                    decoration: BoxDecoration(color: _kGreen, borderRadius: BorderRadius.circular(30)),
+              ),
+              // ── Filled portion ────────────────────────────────────────
+              Positioned(
+                left: 0,
+                top: verticalPad,
+                height: trackHeight,
+                width: filledWidth.clamp(0.0, totalWidth),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: _kGreen,
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                // ── Score badge (moves with fill) ─────────────────────────
-                Positioned(
-                  left: badgeLeft,
-                  top: 0,
-                  bottom: 0,
-                  width: badgeWidth,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      decoration: BoxDecoration(
-                        color: _kGreen,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6, offset: const Offset(0, 2)),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        score % 1 == 0 ? score.toInt().toString() : score.toStringAsFixed(1),
-                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              // ── Score badge (moves with fill) ─────────────────────────
+              Positioned(
+                left: badgeLeft,
+                top: 0,
+                bottom: 0,
+                width: badgeWidth,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    decoration: BoxDecoration(
+                      color: _kGreen,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      score % 1 == 0
+                          ? score.toInt().toString()
+                          : score.toStringAsFixed(1),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -223,17 +276,26 @@ class _IndicatorsContentState extends State<IndicatorsContent> {
           bottomRight: Radius.circular(12),
         ),
         border: Border.all(color: _kGreen, width: 1.2),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 11, color: Colors.black87, height: 1.5),
+        style: const TextStyle(
+          fontSize: 11,
+          color: Colors.black87,
+          height: 1.5,
+        ),
       ),
     );
   }
 
-  /// استخدم هذا للحصول على القيم قبل الإرسال للداتابيس
   Map<String, double> get currentScores => Map.unmodifiable(_scores);
 }
 
@@ -263,9 +325,26 @@ class _WaveChartPainter extends CustomPainter {
 
     for (int i = 0; i < points.length - 1; i++) {
       final cp1 = Offset((points[i].dx + points[i + 1].dx) / 2, points[i].dy);
-      final cp2 = Offset((points[i].dx + points[i + 1].dx) / 2, points[i + 1].dy);
-      linePath.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, points[i + 1].dx, points[i + 1].dy);
-      fillPath.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, points[i + 1].dx, points[i + 1].dy);
+      final cp2 = Offset(
+        (points[i].dx + points[i + 1].dx) / 2,
+        points[i + 1].dy,
+      );
+      linePath.cubicTo(
+        cp1.dx,
+        cp1.dy,
+        cp2.dx,
+        cp2.dy,
+        points[i + 1].dx,
+        points[i + 1].dy,
+      );
+      fillPath.cubicTo(
+        cp1.dx,
+        cp1.dy,
+        cp2.dx,
+        cp2.dy,
+        points[i + 1].dx,
+        points[i + 1].dy,
+      );
     }
 
     fillPath
