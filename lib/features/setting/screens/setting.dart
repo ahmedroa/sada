@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sada/features/auth/ui/login.dart';
 import 'package:sada/features/complaints/complaints_screen.dart';
 
 class Setting extends StatelessWidget {
@@ -9,7 +11,12 @@ class Setting extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('الإعدادات'), centerTitle: true, backgroundColor: Colors.white, elevation: 0),
+      appBar: AppBar(
+        title: Text('الإعدادات'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: Column(
         // crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisAlignment: MainAxisAlignment.center,
@@ -18,7 +25,10 @@ class Setting extends StatelessWidget {
           Container(
             width: 100,
             height: 100,
-            decoration: BoxDecoration(color: Color(0xFF0D986A), borderRadius: BorderRadius.circular(50)),
+            decoration: BoxDecoration(
+              color: Color(0xFF0D986A),
+              borderRadius: BorderRadius.circular(50),
+            ),
             child: Icon(Icons.person, color: Colors.white, size: 44),
           ),
           SizedBox(height: 20),
@@ -30,7 +40,12 @@ class Setting extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 2, bottom: 2),
+              padding: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 2,
+                bottom: 2,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 10,
@@ -38,7 +53,11 @@ class Setting extends StatelessWidget {
                   SvgPicture.asset('img/edit.svg'),
                   Text(
                     'تعديل',
-                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -50,7 +69,10 @@ class Setting extends StatelessWidget {
             title: 'الشكاوي والإقتراحات',
             icon: 'img/qq.svg',
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ComplaintsScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ComplaintsScreen()),
+              );
             },
           ),
           SizedBox(height: 20),
@@ -76,36 +98,100 @@ class Setting extends StatelessWidget {
             child: const Divider(color: Colors.black, height: 1),
           ),
           SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'تسجيل الخروج',
-                style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              SizedBox(width: 10),
-              Icon(Icons.login_outlined, color: Colors.black, size: 16),
-            ],
+          GestureDetector(
+            onTap: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  title: const Text('تسجيل الخروج', textAlign: TextAlign.right),
+                  content: const Text(
+                    'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                    textAlign: TextAlign.right,
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text(
+                        'إلغاء',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text(
+                        'خروج',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+              if (confirm == true) {
+                await FirebaseAuth.instance.signOut();
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => const Login()),
+                    (_) => false,
+                  );
+                }
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'تسجيل الخروج',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Icon(Icons.login_outlined, color: Colors.black, size: 16),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget buildItem({required String title, required String icon, VoidCallback? onTap}) {
+  Widget buildItem({
+    required String title,
+    required String icon,
+    VoidCallback? onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.only(right: 30, top: 12, bottom: 12),
         child: Row(
           children: [
-            SizedBox(width: 24, height: 24, child: SvgPicture.asset(icon, width: 24, height: 24, fit: BoxFit.contain)),
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: SvgPicture.asset(
+                icon,
+                width: 24,
+                height: 24,
+                fit: BoxFit.contain,
+              ),
+            ),
 
             SizedBox(width: 16),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
                 textAlign: TextAlign.right,
               ),
             ),
