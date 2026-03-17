@@ -46,6 +46,7 @@ class _LoginState extends State<Login> {
           MaterialPageRoute(builder: (_) => const BottomNavBar()),
           (_) => false,
         );
+        
       }
     } on FirebaseAuthException catch (e) {
       String message;
