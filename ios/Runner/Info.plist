@@ -6,6 +6,12 @@
 	<string>نحتاج موقعك لعرض الحدائق القريبة منك</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>نحتاج موقعك لعرض الحدائق القريبة منك</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>نحتاج الوصول لمكتبة الصور لتحديث صورتك الشخصية</string>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج الوصول للكاميرا لالتقاط صورتك الشخصية</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>نحتاج الوصول لحفظ الصور</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

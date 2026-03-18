@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:sada/core/services/location_service.dart';
 import 'package:sada/core/widgets/main_button.dart';
 
 class Home extends StatefulWidget {
@@ -21,54 +20,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _fetchLocation() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        setState(() => _locationText = 'خدمة الموقع معطلة');
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          setState(() => _locationText = 'لم يتم منح إذن الموقع');
-          return;
-        }
-      }
-      if (permission == LocationPermission.deniedForever) {
-        setState(() => _locationText = 'الموقع محظور، يرجى تفعيله من الإعدادات');
-        return;
-      }
-
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.low,
-          timeLimit: Duration(seconds: 10),
-        ),
-      );
-
-      final placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      ).timeout(const Duration(seconds: 8));
-
-      if (placemarks.isNotEmpty && mounted) {
-        final p = placemarks.first;
-        final isSaudi = p.isoCountryCode == 'SA';
-
-        if (!isSaudi) {
-          setState(() => _locationText = 'سكاكا، المملكة العربية السعودية');
-        } else {
-          final city = p.locality?.isNotEmpty == true
-              ? p.locality!
-              : p.subAdministrativeArea ?? '';
-          setState(() => _locationText = '$city، المملكة العربية السعودية');
-        }
-      }
-    } catch (_) {
-      if (mounted) setState(() => _locationText = 'تعذر تحديد الموقع');
-    }
+    final city = await LocationService.fetchCityName();
+    if (mounted) setState(() => _locationText = city);
   }
 
   @override
@@ -84,12 +37,20 @@ class _HomeState extends State<Home> {
               alignment: Alignment.center,
               child: Text(
                 'الصفحه الئيسيه',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Color(0xff0A5E3F)),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff0A5E3F),
+                ),
               ),
             ),
             Text(
               'أهلاً',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xff0A5E3F)),
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff0A5E3F),
+              ),
             ),
             SizedBox(height: 16),
             Row(
@@ -97,10 +58,7 @@ class _HomeState extends State<Home> {
                 Icon(Icons.location_on_outlined),
                 SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    _locationText,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  child: Text(_locationText, overflow: TextOverflow.ellipsis),
                 ),
               ],
             ),
@@ -111,7 +69,9 @@ class _HomeState extends State<Home> {
               height: 300,
               decoration: BoxDecoration(
                 color: Color(0xffDEEAD8),
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(60)),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(60),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -140,7 +100,12 @@ class _HomeState extends State<Home> {
                               SizedBox(height: 16),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(35),
-                                child: Image.asset('img/test.jpg', width: 140, height: 150, fit: BoxFit.cover),
+                                child: Image.asset(
+                                  'img/test.jpg',
+                                  width: 140,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               SizedBox(height: 16),
                               SizedBox(width: 140, height: 40),
@@ -158,20 +123,40 @@ class _HomeState extends State<Home> {
                         Expanded(
                           child: Column(
                             children: [
-                              buildItem(title: 'صحة النباتات', value: '70-75%', icon: 'img/Group 174.svg'),
+                              buildItem(
+                                title: 'صحة النباتات',
+                                value: '70-75%',
+                                icon: 'img/Group 174.svg',
+                              ),
                               SizedBox(height: 16),
-                              buildItem(title: 'حالة الألعاب', value: 'حالة الالعاب', icon: 'img/Vector (3).svg'),
+                              buildItem(
+                                title: 'حالة الألعاب',
+                                value: 'حالة الالعاب',
+                                icon: 'img/Vector (3).svg',
+                              ),
                             ],
                           ),
                         ),
                         Expanded(
                           child: Column(
                             children: [
-                              buildItem(title: 'الشمس', value: 'مشمس  30ْ', icon: 'img/sh.svg'),
+                              buildItem(
+                                title: 'الشمس',
+                                value: 'مشمس  30ْ',
+                                icon: 'img/sh.svg',
+                              ),
                               SizedBox(height: 16),
-                              buildItem(title: 'نسبة  الإزدحام', value: '30%', icon: 'img/persons.svg'),
+                              buildItem(
+                                title: 'نسبة  الإزدحام',
+                                value: '30%',
+                                icon: 'img/persons.svg',
+                              ),
                               SizedBox(height: 16),
-                              buildItem(title: 'استهلاك المياه', value: '80%', icon: 'img/as.svg'),
+                              buildItem(
+                                title: 'استهلاك المياه',
+                                value: '80%',
+                                icon: 'img/as.svg',
+                              ),
                             ],
                           ),
                         ),
@@ -202,7 +187,11 @@ class _HomeState extends State<Home> {
                       children: [
                         Text(
                           'ساهم في زرع 1000 نبته \n في حدائق منطقة الجوف',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[100]),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[100],
+                          ),
                         ),
                         SizedBox(width: 16),
                         MainButton(
@@ -225,7 +214,9 @@ class _HomeState extends State<Home> {
                             height: 4,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
                             ),
                           ),
                           SizedBox(width: 4),
@@ -234,7 +225,9 @@ class _HomeState extends State<Home> {
                             height: 4,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
                             ),
                           ),
                           SizedBox(width: 4),
@@ -243,7 +236,9 @@ class _HomeState extends State<Home> {
                             height: 4,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
                             ),
                           ),
                         ],
@@ -259,17 +254,29 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Column buildItem({required String title, required String value, required String icon}) {
+  Column buildItem({
+    required String title,
+    required String value,
+    required String icon,
+  }) {
     return Column(
       children: [
         SvgPicture.asset(icon),
         Text(
           title,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xff013220)),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff013220),
+          ),
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Color(0xff0D986A)),
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff0D986A),
+          ),
         ),
       ],
     );
