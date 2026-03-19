@@ -82,25 +82,27 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                          color: _isLoadingPhoto ? Colors.grey[200] : ColorsManager.kPrimaryColo,
-                          shape: BoxShape.circle,
-                          image: !_isLoadingPhoto && _photoUrl != null
+                        color: _isLoadingPhoto
+                            ? Colors.grey[200]
+                            : ColorsManager.kPrimaryColo,
+                        shape: BoxShape.circle,
+                        image: !_isLoadingPhoto && _photoUrl != null
                             ? DecorationImage(
                                 image: NetworkImage(_photoUrl!),
                                 fit: BoxFit.cover,
                               )
                             : null,
                       ),
-                        child: _isLoadingPhoto
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: ColorsManager.kPrimaryColo,
-                                  backgroundColor: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
+                      child: _isLoadingPhoto
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: ColorsManager.kPrimaryColo,
+                                backgroundColor: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
                           : _photoUrl == null
                           ? const Icon(
                               Icons.person,

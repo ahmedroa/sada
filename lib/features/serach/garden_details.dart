@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:sada/core/theme/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GardenDetails extends StatelessWidget {
   final String name;
   final String distance;
   final String image;
+  final double lat;
+  final double lng;
 
   const GardenDetails({
     super.key,
     required this.name,
     required this.distance,
     required this.image,
+    required this.lat,
+    required this.lng,
   });
+
+  Future<void> _openGoogleMaps() async {
+    final uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +101,7 @@ class GardenDetails extends StatelessWidget {
                     ],
                   ),
                   Center(
-                    child: Image.asset(
+                    child: Image.network(
                       image,
                       width: 280,
                       height: 200,
@@ -153,31 +165,34 @@ class GardenDetails extends StatelessWidget {
 
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: const EdgeInsets.only(left: 24, right: 24),
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(0xff0D986A),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  SizedBox(width: 16),
-                  Text(
-                    'الموقع',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
+            child: GestureDetector(
+              onTap: _openGoogleMaps,
+              child: Container(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color(0xff0D986A),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
                       color: Colors.white,
+                      size: 24,
                     ),
-                  ),
-                ],
+                    SizedBox(width: 16),
+                    Text(
+                      'الموقع',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

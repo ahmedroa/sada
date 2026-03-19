@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sada/core/theme/colors.dart';
@@ -14,20 +15,37 @@ class Serach extends StatefulWidget {
 class _SerachState extends State<Serach> {
   int _selectedPeriodIndex = 0;
   Position? _userPosition;
+  List<Map<String, dynamic>> _gardens = [];
+  bool _isLoadingGardens = true;
 
-  static const List<String> _periods = ['الحدائق', 'الأشجار والنباتات', 'مواقف', 'الاكل والشراب'];
-
-  static const List<Map<String, dynamic>> _gardens = [
-    {'name': 'حديقة النخيل',   'lat': 29.995146, 'lng': 40.227533, 'image': 'img/test.jpg'},
-    {'name': 'حديقة الخزامى',  'lat': 30.000179, 'lng': 40.218846, 'image': 'img/Group 6265788.png'},
-    {'name': 'حديقة العزيزية', 'lat': 29.961350, 'lng': 40.187453, 'image': 'img/5345.png'},
-    {'name': 'حديقة المبخرة',  'lat': 30.016377, 'lng': 40.221313, 'image': 'img/9843.png'},
+  static const List<String> _periods = [
+    'الحدائق',
+    'الأشجار والنباتات',
+    'مواقف',
+    'الاكل والشراب',
   ];
 
   @override
   void initState() {
     super.initState();
     _fetchUserLocation();
+    _fetchGardens();
+  }
+
+  Future<void> _fetchGardens() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('gardens')
+          .get();
+      if (mounted) {
+        setState(() {
+          _gardens = snapshot.docs.map((doc) => doc.data()).toList();
+          _isLoadingGardens = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoadingGardens = false);
+    }
   }
 
   Future<void> _fetchUserLocation() async {
@@ -49,25 +67,28 @@ class _SerachState extends State<Serach> {
         ),
       );
 
-      final isInSaudi = position.latitude >= 16.0 &&
+      final isInSaudi =
+          position.latitude >= 16.0 &&
           position.latitude <= 32.5 &&
           position.longitude >= 34.5 &&
           position.longitude <= 56.0;
 
       if (!isInSaudi) {
         if (mounted) {
-          setState(() => _userPosition = Position(
-            latitude: 29.955942,
-            longitude: 40.209633,
-            timestamp: DateTime.now(),
-            accuracy: 0,
-            altitude: 0,
-            altitudeAccuracy: 0,
-            heading: 0,
-            headingAccuracy: 0,
-            speed: 0,
-            speedAccuracy: 0,
-          ));
+          setState(
+            () => _userPosition = Position(
+              latitude: 29.955942,
+              longitude: 40.209633,
+              timestamp: DateTime.now(),
+              accuracy: 0,
+              altitude: 0,
+              altitudeAccuracy: 0,
+              heading: 0,
+              headingAccuracy: 0,
+              speed: 0,
+              speedAccuracy: 0,
+            ),
+          );
         }
         return;
       }
@@ -120,26 +141,47 @@ class _SerachState extends State<Serach> {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Text('الاقرب', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                const Text(
+                  'الاقرب',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                ),
                 const Icon(Icons.arrow_downward, size: 13),
               ],
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: _gardens.map((g) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: _buildItem(
-                        name: g['name'],
-                        image: g['image'],
-                        distance: _calcDistance(g['lat'], g['lng']),
+              child: _isLoadingGardens
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xff0D986A),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                    )
+                  : _gardens.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'لا توجد حدائق',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: _gardens.map((g) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _buildItem(
+                              name: g['name'] ?? '',
+                              image: g['image'] ?? '',
+                              lat: (g['lat'] as num).toDouble(),
+                              lng: (g['lng'] as num).toDouble(),
+                              distance: _calcDistance(
+                                (g['lat'] as num).toDouble(),
+                                (g['lng'] as num).toDouble(),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -147,19 +189,60 @@ class _SerachState extends State<Serach> {
     );
   }
 
-   InkWell _buildItem({
+  InkWell _buildItem({
     required String name,
     required String image,
     required String distance,
+    required double lat,
+    required double lng,
   }) {
     return InkWell(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => GardenDetails(name: name, distance: distance, image: image))),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GardenDetails(
+            name: name,
+            distance: distance,
+            image: image,
+            lat: lat,
+            lng: lng,
+          ),
+        ),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(image, width: 100, height: 100, fit: BoxFit.cover),
+            child: Image.network(
+              image,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xff0D986A),
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 100,
+                height: 100,
+                color: Colors.grey[200],
+                child: const Icon(
+                  Icons.broken_image_outlined,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -168,10 +251,27 @@ class _SerachState extends State<Serach> {
               children: [
                 Row(
                   children: [
-                    Text(name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(width: 10),
-                          const Text('4.5', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500,color: Color(0xffFFBB56))),
-          const Icon(Icons.star_rate, size: 13, color: Color(0xffFFBB56)),
+                    const Text(
+                      '4.5',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xffFFBB56),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.star_rate,
+                      size: 13,
+                      color: Color(0xffFFBB56),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -187,14 +287,12 @@ class _SerachState extends State<Serach> {
                         color: Colors.grey,
                       ),
                     ),
-                    
                   ],
                 ),
               ],
             ),
           ),
           const SizedBox(width: 10),
-      
         ],
       ),
     );
@@ -217,9 +315,14 @@ class _SerachState extends State<Serach> {
                 borderRadius: BorderRadius.circular(24),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xff0D986A) : ColorsManager.lighterGray,
+                    color: isSelected
+                        ? const Color(0xff0D986A)
+                        : ColorsManager.lighterGray,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   alignment: Alignment.center,

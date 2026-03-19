@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sada/core/theme/colors.dart';
@@ -56,9 +57,9 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
   }
 
   void _removeFile() => setState(() {
-        _attachedFile = null;
-        _attachedFileName = null;
-      });
+    _attachedFile = null;
+    _attachedFileName = null;
+  });
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -69,11 +70,14 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
       // رفع الملف إذا وُجد
       String? fileUrl;
       if (_attachedFile != null) {
-        final ref = FirebaseStorage.instance
-            .ref('complaints/${DateTime.now().millisecondsSinceEpoch}_$_attachedFileName');
+        final ref = FirebaseStorage.instance.ref(
+          'complaints/${DateTime.now().millisecondsSinceEpoch}_$_attachedFileName',
+        );
         await ref.putFile(_attachedFile!);
         fileUrl = await ref.getDownloadURL();
       }
+
+      final user = FirebaseAuth.instance.currentUser;
 
       await FirebaseFirestore.instance
           .collection('Complaints and suggestions')
@@ -84,7 +88,9 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
             'email': _emailController.text.trim(),
             'phone': _phoneController.text.trim(),
             'message': _messageController.text.trim(),
-            'createdAt': FieldValue.serverTimestamp(),
+            'uid': user?.uid,
+            'userEmail': user?.email,
+            'sentAt': FieldValue.serverTimestamp(),
             if (fileUrl != null) 'attachmentUrl': fileUrl,
             if (_attachedFileName != null) 'attachmentName': _attachedFileName,
           });
@@ -95,7 +101,9 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
             content: const Text('تم الإرسال بنجاح', textAlign: TextAlign.right),
             backgroundColor: _kGreen,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         _nameController.clear();
@@ -354,7 +362,9 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
               decoration: BoxDecoration(
                 color: ColorsManager.lighterGray,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _kGreen.withOpacity(.4), width: 1.2),
+                // 
+                //
+                //border: Border.all(color: _kGreen.withOpacity(.4), width: 1.2),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -363,7 +373,11 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
                   const SizedBox(width: 8),
                   Text(
                     'اضغط لاختيار ملف',
-                    style: TextStyle(fontSize: 13, color: _kGreen, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: _kGreen,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -380,7 +394,11 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.insert_drive_file_outlined, color: _kGreen, size: 20),
+                Icon(
+                  Icons.insert_drive_file_outlined,
+                  color: _kGreen,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
