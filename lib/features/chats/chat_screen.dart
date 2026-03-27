@@ -1,7 +1,7 @@
-// ignore_for_file: unused_element_parameter
-
 import 'package:flutter/material.dart';
+import 'package:sada/core/services/chat_service.dart';
 import 'package:sada/core/theme/colors.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ChatScreen extends StatefulWidget {
   final String initialQuestion;
@@ -17,24 +17,78 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
 
   final List<_ChatMessage> _messages = [];
-  final Set<int> _usedOptions = {};
+  // تاريخ المحادثة لإرساله لـ ChatGPT
+  final List<Map<String, String>> _history = [];
+
+  bool _isLoading = false;
+  double? _userLat;
+  double? _userLng;
 
   @override
   void initState() {
     super.initState();
-    _messages.add(_ChatMessage(text: widget.initialQuestion, isUser: true));
-    _messages.add(_ChatMessage(text: 'ما هو هدفك من الزيارة ؟', isUser: false));
+    _fetchLocationIfNeeded();
+    _sendToGpt(widget.initialQuestion);
+  }
+
+  Future<void> _fetchLocationIfNeeded() async {
+    if (widget.initialQuestion.contains('اقرب حديقة')) {
+      try {
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.low),
+        );
+        _userLat = position.latitude;
+        _userLng = position.longitude;
+      } catch (_) {}
+    }
+  }
+
+  Future<void> _sendToGpt(String userText) async {
+    if (userText.trim().isEmpty) return;
+
+    setState(() {
+      _messages.add(_ChatMessage(text: userText, isUser: true));
+      _isLoading = true;
+    });
+    _scrollToBottom();
+
+    try {
+      final reply = await ChatService.sendMessage(
+        history: List.from(_history),
+        userMessage: userText,
+        userLat: _userLat,
+        userLng: _userLng,
+      );
+
+      _history.add({'role': 'user', 'content': userText});
+      _history.add({'role': 'assistant', 'content': reply});
+
+      if (mounted) {
+        setState(() {
+          _messages.add(_ChatMessage(text: reply, isUser: false));
+          _isLoading = false;
+        });
+        _scrollToBottom();
+      }
+    } catch (e) {
+      debugPrint('Chat error: $e');
+      if (mounted) {
+        setState(() {
+          _messages.add(_ChatMessage(text: 'عذراً، حدث خطأ: $e', isUser: false));
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   void _sendMessage() {
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty || _isLoading) return;
+    _controller.clear();
+    _sendToGpt(text);
+  }
 
-    setState(() {
-      _messages.add(_ChatMessage(text: text, isUser: true));
-      _controller.clear();
-    });
-
+  void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -56,32 +110,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color(0xffF5F5F5),
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0.5,
-      //   centerTitle: true,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
-      //     onPressed: () => Navigator.pop(context),
-      //   ),
-      //   title: Row(
-      //     mainAxisSize: MainAxisSize.min,
-      //     children: [
-      //       const CircleAvatar(
-      //         radius: 16,
-      //         backgroundColor: Color(0xff159148),
-      //         child: Icon(Icons.eco, color: Colors.white, size: 16),
-      //       ),
-      //       const SizedBox(width: 8),
-      //       const Text(
-      //         'سَليل',
-      //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: SafeArea(
         child: Column(
           children: [
@@ -109,65 +138,10 @@ class _ChatScreenState extends State<ChatScreen> {
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                itemCount: _messages.length,
+                itemCount: _messages.length + (_isLoading ? 1 : 0),
                 itemBuilder: (context, index) {
-                  final msg = _messages[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildBubble(msg),
-                      if (msg.options != null && !_usedOptions.contains(index))
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12, top: 4),
-                          child: Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: msg.options!.map((option) {
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _usedOptions.add(index);
-                                    _messages.add(_ChatMessage(text: option, isUser: true));
-                                  });
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    if (_scrollController.hasClients) {
-                                      _scrollController.animateTo(
-                                        _scrollController.position.maxScrollExtent,
-                                        duration: const Duration(milliseconds: 300),
-                                        curve: Curves.easeOut,
-                                      );
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(24),
-                                    border: Border.all(color: const Color(0xff159148), width: 1.5),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    option,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xff159148),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                    ],
-                  );
+                  if (index == _messages.length) return _buildTypingIndicator();
+                  return _buildBubble(_messages[index]);
                 },
               ),
             ),
@@ -181,31 +155,53 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildBubble(_ChatMessage msg) {
     return Align(
       alignment: msg.isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Column(
-        crossAxisAlignment: msg.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-            decoration: BoxDecoration(
-              color: msg.isUser ? const Color(0xffC0E8BB).withOpacity(.62) : Color(0xff8BE481).withOpacity(.62),
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(16),
-                topRight: const Radius.circular(16),
-                bottomLeft: msg.isUser ? const Radius.circular(16) : const Radius.circular(4),
-                bottomRight: msg.isUser ? const Radius.circular(4) : const Radius.circular(16),
-              ),
-              border: Border.all(color: msg.isUser ? ColorsManager.kPrimaryColo : ColorsManager.kPrimaryColo, width: 1),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6, offset: const Offset(0, 2))],
-            ),
-            child: Text(
-              msg.text,
-              style: TextStyle(fontSize: 16, color: msg.isUser ? Colors.black : Colors.black87, height: 1.5),
-              textDirection: TextDirection.rtl,
-            ),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        decoration: BoxDecoration(
+          color: msg.isUser
+              ? const Color(0xffC0E8BB).withOpacity(.62)
+              : const Color(0xff8BE481).withOpacity(.62),
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(16),
+            topRight: const Radius.circular(16),
+            bottomLeft: msg.isUser ? const Radius.circular(16) : const Radius.circular(4),
+            bottomRight: msg.isUser ? const Radius.circular(4) : const Radius.circular(16),
           ),
-        ],
+          border: Border.all(color: ColorsManager.kPrimaryColo, width: 1),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6, offset: const Offset(0, 2))],
+        ),
+        child: Text(
+          msg.text,
+          style: TextStyle(fontSize: 16, color: msg.isUser ? Colors.black : Colors.black87, height: 1.5),
+          textDirection: TextDirection.rtl,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTypingIndicator() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xff8BE481).withOpacity(.62),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+            bottomLeft: Radius.circular(4),
+          ),
+          border: Border.all(color: ColorsManager.kPrimaryColo, width: 1),
+        ),
+        child: const SizedBox(
+          width: 40,
+          height: 16,
+          child: _TypingDots(),
+        ),
       ),
     );
   }
@@ -213,15 +209,23 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildInputBar() {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(left: 12, right: 12, top: 10, bottom: MediaQuery.of(context).viewInsets.bottom + 12),
+      padding: EdgeInsets.only(
+        left: 12,
+        right: 12,
+        top: 10,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 12,
+      ),
       child: Row(
         children: [
           GestureDetector(
-            onTap: _sendMessage,
+            onTap: _isLoading ? null : _sendMessage,
             child: Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(color: Color(0xff159148), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: _isLoading ? Colors.grey : const Color(0xff159148),
+                shape: BoxShape.circle,
+              ),
               child: const Icon(Icons.send, color: Colors.white, size: 20),
             ),
           ),
@@ -232,6 +236,7 @@ class _ChatScreenState extends State<ChatScreen> {
               textDirection: TextDirection.rtl,
               textInputAction: TextInputAction.send,
               onSubmitted: (_) => _sendMessage(),
+              enabled: !_isLoading,
               decoration: InputDecoration(
                 hintText: 'اكتب رسالتك...',
                 hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
@@ -251,7 +256,52 @@ class _ChatScreenState extends State<ChatScreen> {
 class _ChatMessage {
   final String text;
   final bool isUser;
-  final List<String>? options;
+  _ChatMessage({required this.text, required this.isUser});
+}
 
-  _ChatMessage({required this.text, required this.isUser, this.options});
+class _TypingDots extends StatefulWidget {
+  const _TypingDots();
+  @override
+  State<_TypingDots> createState() => _TypingDotsState();
+}
+
+class _TypingDotsState extends State<_TypingDots> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))
+      ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (_, __) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (i) {
+            final opacity = ((_controller.value * 3 - i) % 1).clamp(0.2, 1.0);
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              width: 7,
+              height: 7,
+              decoration: BoxDecoration(
+                color: const Color(0xff159148).withOpacity(opacity),
+                shape: BoxShape.circle,
+              ),
+            );
+          }),
+        );
+      },
+    );
+  }
 }

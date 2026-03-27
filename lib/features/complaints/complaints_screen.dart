@@ -361,7 +361,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
               decoration: BoxDecoration(
                 color: ColorsManager.lighterGray,
                 borderRadius: BorderRadius.circular(12),
-                // 
+                //
                 //
                 //border: Border.all(color: _kGreen.withOpacity(.4), width: 1.2),
               ),
