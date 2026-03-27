@@ -295,6 +295,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
           keyboardType: keyboardType,
           validator: validator ?? (value) => null,
           borderRadius: BorderRadius.circular(20),
+
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: ColorsManager.kPrimaryColor,
@@ -310,6 +311,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           fillColor: const Color(0xffE5E5E5).withOpacity(.43),
+          inputTextStyle: const TextStyle(color: Colors.black),
         ),
         const SizedBox(height: 10),
       ],

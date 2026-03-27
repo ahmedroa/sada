@@ -81,7 +81,7 @@ class AppTextFormField extends StatelessWidget {
       textAlign: textAlign ?? TextAlign.start,
       keyboardType: keyboardType,
       controller: controller,
-      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: ColorsManager.gray),
+      style: inputTextStyle ?? TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: ColorsManager.gray),
       onChanged: onChanged,
       maxLength: maxLength,
       inputFormatters: inputFormatters,
