@@ -52,6 +52,7 @@ dependencies:
   url_launcher: ^6.3.2
   http: ^1.6.0
   flutter_dotenv: ^6.0.0
+  dio: ^5.9.2
 
 
 dev_dependencies:

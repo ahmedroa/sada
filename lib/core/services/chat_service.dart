@@ -1,15 +1,21 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 
 class ChatService {
   static String get _apiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
   static const _model = 'gpt-3.5-turbo';
-  static const _url = 'https://api.openai.com/v1/chat/completions';
 
-  // كاش للحدائق بعد أول جلب
+  static final _dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://api.openai.com',
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 30),
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+    ),
+  );
+
   static List<Map<String, dynamic>>? _cachedGardens;
 
   static Future<List<Map<String, dynamic>>> _fetchGardens() async {
@@ -84,10 +90,8 @@ class ChatService {
     double? userLat,
     double? userLng,
   }) async {
-    // جلب الحدائق من Firestore
     final gardens = await _fetchGardens();
 
-    // بناء System Prompt مع أسماء الحدائق الحقيقية من Firestore
     final gardenNames = gardens.map((g) => '- ${g['name']}').join('\n');
     final systemPrompt =
         'الحدائق المتاحة في التطبيق:\n$gardenNames\n\n$_systemPromptBase';
@@ -106,22 +110,20 @@ class ChatService {
       {'role': 'user', 'content': messageToSend},
     ];
 
-    final response = await http.post(
-      Uri.parse(_url),
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': 'Bearer $_apiKey',
-      },
-      body: jsonEncode({'model': _model, 'messages': messages, 'max_tokens': 500}),
-    );
+    try {
+      final response = await _dio.post(
+        '/v1/chat/completions',
+        options: Options(headers: {'Authorization': 'Bearer $_apiKey'}),
+        data: {'model': _model, 'messages': messages, 'max_tokens': 500},
+      );
 
-    debugPrint('ChatGPT status: ${response.statusCode}');
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-      return data['choices'][0]['message']['content'].toString().trim();
-    } else {
-      throw Exception('خطأ ${response.statusCode}: ${response.body}');
+      debugPrint('ChatGPT status: ${response.statusCode}');
+      return response.data['choices'][0]['message']['content'].toString().trim();
+    } on DioException catch (e) {
+      final status = e.response?.statusCode ?? 0;
+      final body = e.response?.data?.toString() ?? e.message;
+      debugPrint('ChatGPT error $status: $body');
+      throw Exception('خطأ $status: $body');
     }
   }
 }
