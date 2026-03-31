@@ -2,34 +2,48 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sada/core/network/models/chat_request.dart';
+import 'package:sada/core/network/openai_client.dart';
 
 class ChatService {
   static String get _apiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
   static const _model = 'gpt-3.5-turbo';
 
-  static final _dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://api.openai.com',
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 30),
-      headers: {'Content-Type': 'application/json; charset=utf-8'},
-    ),
-  );
+  static OpenAiClient? _client;
 
+  static OpenAiClient get _openAiClient {
+    if (_client != null) return _client!;
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 30),
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Authorization': 'Bearer $_apiKey',
+        },
+      ),
+    );
+    _client = OpenAiClient(dio);
+    return _client!;
+  }
+
+  // كاش للحدائق بعد أول جلب
   static List<Map<String, dynamic>>? _cachedGardens;
 
   static Future<List<Map<String, dynamic>>> _fetchGardens() async {
     if (_cachedGardens != null) return _cachedGardens!;
 
-    final snapshot = await FirebaseFirestore.instance.collection('gardens').get();
-    _cachedGardens = snapshot.docs.map((doc) {
-      final data = doc.data();
-      return {
-        'name': data['name'] ?? '',
-        'lat': (data['lat'] as num).toDouble(),
-        'lng': (data['lng'] as num).toDouble(),
-      };
-    }).toList();
+    final snapshot =
+        await FirebaseFirestore.instance.collection('gardens').get();
+    _cachedGardens =
+        snapshot.docs.map((doc) {
+          final data = doc.data();
+          return {
+            'name': data['name'] ?? '',
+            'lat': (data['lat'] as num).toDouble(),
+            'lng': (data['lng'] as num).toDouble(),
+          };
+        }).toList();
 
     debugPrint('Loaded ${_cachedGardens!.length} gardens from Firestore');
     return _cachedGardens!;
@@ -60,7 +74,12 @@ class ChatService {
 التزم بهذه الإجابات عند طرح هذه الأسئلة. وللأسئلة الأخرى المتعلقة بالحدائق، أجب بشكل مفيد ومختصر.
 ''';
 
-  static double _distance(double lat1, double lng1, double lat2, double lng2) {
+  static double _distance(
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
+  ) {
     final dlat = lat1 - lat2;
     final dlng = lng1 - lng2;
     return dlat * dlat + dlng * dlng;
@@ -72,7 +91,12 @@ class ChatService {
     double userLng,
   ) {
     Map<String, dynamic> nearest = gardens[0];
-    double minDist = _distance(userLat, userLng, gardens[0]['lat'], gardens[0]['lng']);
+    double minDist = _distance(
+      userLat,
+      userLng,
+      gardens[0]['lat'],
+      gardens[0]['lng'],
+    );
 
     for (final g in gardens.skip(1)) {
       final d = _distance(userLat, userLng, g['lat'], g['lng']);
@@ -96,7 +120,6 @@ class ChatService {
     final systemPrompt =
         'الحدائق المتاحة في التطبيق:\n$gardenNames\n\n$_systemPromptBase';
 
-    // إذا كان السؤال عن أقرب حديقة وعندنا الموقع
     String messageToSend = userMessage;
     if (userLat != null && userLng != null && userMessage.contains('اقرب حديقة')) {
       final nearest = _nearestGarden(gardens, userLat, userLng);
@@ -104,21 +127,19 @@ class ChatService {
           '$userMessage\n[موقع المستخدم: خط العرض $userLat، خط الطول $userLng — أقرب حديقة محسوبة: $nearest]';
     }
 
-    final messages = [
+    final messages = <Map<String, String>>[
       {'role': 'system', 'content': systemPrompt},
       ...history,
       {'role': 'user', 'content': messageToSend},
     ];
 
     try {
-      final response = await _dio.post(
-        '/v1/chat/completions',
-        options: Options(headers: {'Authorization': 'Bearer $_apiKey'}),
-        data: {'model': _model, 'messages': messages, 'max_tokens': 500},
+      final response = await _openAiClient.sendMessage(
+        ChatRequest(model: _model, messages: messages, maxTokens: 500),
       );
 
-      debugPrint('ChatGPT status: ${response.statusCode}');
-      return response.data['choices'][0]['message']['content'].toString().trim();
+      debugPrint('ChatGPT: got ${response.choices.length} choice(s)');
+      return response.choices.first.message.content.trim();
     } on DioException catch (e) {
       final status = e.response?.statusCode ?? 0;
       final body = e.response?.data?.toString() ?? e.message;
@@ -127,6 +148,3 @@ class ChatService {
     }
   }
 }
-
-
-
