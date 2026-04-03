@@ -61,8 +61,6 @@ dependencies:
   file_picker: ^10.3.10
   # لفتح الروابط الخارجية
   url_launcher: ^6.3.2
-  # مكتبة لتشفير ال api key للتطبيق
-  flutter_dotenv: ^6.0.0
   # مكتبة للتواصل مع ال API
   dio: ^5.9.2
   # مكتبة للتواصل مع ال API
@@ -99,7 +97,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - img/
-    - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
