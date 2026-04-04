@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sada/features/home/widgets/bottom_nav_bar.dart';
+import 'package:sada/features/onboarding/onboarding.dart';
 import 'package:sada/firebase_options.dart';
 
 bool isLoggedIn = false;
@@ -40,8 +41,8 @@ class MyApp extends StatelessWidget {
       ),
 
       // home: isLoggedIn ? const BottomNavBar() : const Onboarding(),
-      // home: const Onboarding(),
-      home: const BottomNavBar(),
+      home: const Onboarding(),
+      // home: const BottomNavBar(),
     );
   }
 }

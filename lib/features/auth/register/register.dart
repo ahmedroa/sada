@@ -191,8 +191,18 @@ class _RegisterState extends State<Register> {
                       validator: (val) {
                         if (val == null || val.isEmpty)
                           return 'أدخل كلمة المرور';
-                        if (val.length < 6)
-                          return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                        if (val.length < 8)
+                          return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+                        if (!RegExp(r'[A-Z]').hasMatch(val))
+                          return 'يجب أن تحتوي على حرف كبير (A-Z)';
+                        if (!RegExp(r'[a-z]').hasMatch(val))
+                          return 'يجب أن تحتوي على حرف صغير (a-z)';
+                        if (!RegExp(r'[0-9]').hasMatch(val))
+                          return 'يجب أن تحتوي على رقم';
+                        if (!RegExp(
+                          r'[!@#\$%^&*(),.?":{}|<>_\-]',
+                        ).hasMatch(val))
+                          return 'يجب أن تحتوي على رمز مثل (!@#\$)';
                         return null;
                       },
                     ),
