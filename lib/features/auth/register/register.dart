@@ -153,11 +153,7 @@ class _RegisterState extends State<Register> {
                       validator: (val) {
                         if (val == null || val.trim().isEmpty)
                           return 'أدخل البريد الإلكتروني';
-                        if (!RegExp(
-                          r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
-                        ).hasMatch(val.trim())) {
-                          return 'البريد الإلكتروني غير صحيح';
-                        }
+
                         return null;
                       },
                     ),

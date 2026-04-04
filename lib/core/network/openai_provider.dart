@@ -3,7 +3,7 @@ import 'package:sada/core/network/openai_client.dart';
 
 class OpenAiProvider {
   static const _apiKey =
-      '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';
+      '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';
 
   static OpenAiClient? _client;
 

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/curved_top_widget.dart';
 import 'package:sada/core/widgets/main_button.dart';
-import 'package:sada/features/auth/ui/login.dart';
+import 'package:sada/features/auth/login/ui/login.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,18 +27,30 @@ class Onboarding extends StatelessWidget {
                     children: [
                       Text(
                         ' سَدَى',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: ColorsManager.primary),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: ColorsManager.primary,
+                        ),
                       ),
                       Text(
                         ' | SADA   ',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: ColorsManager.kPrimaryColor),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: ColorsManager.kPrimaryColor,
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 10),
                   Text(
                     'سَدَى..نسيجُ الحدائق المستدام',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: ColorsManager.primary),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: ColorsManager.primary,
+                    ),
                   ),
                   SizedBox(height: 70),
                   Padding(
@@ -46,7 +58,10 @@ class Onboarding extends StatelessWidget {
                     child: MainButton(
                       text: 'ابدأ',
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Login()),
+                        );
                       },
                     ),
                   ),

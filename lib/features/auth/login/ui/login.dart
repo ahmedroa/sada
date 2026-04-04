@@ -46,7 +46,6 @@ class _LoginState extends State<Login> {
           MaterialPageRoute(builder: (_) => const BottomNavBar()),
           (_) => false,
         );
-        
       }
     } on FirebaseAuthException catch (e) {
       String message;
@@ -99,17 +98,30 @@ class _LoginState extends State<Login> {
           child: Column(
             children: [
               CurvedTopWidget(),
-              Image.asset('img/logo.png', width: 200, height: 200, fit: BoxFit.cover),
+              Image.asset(
+                'img/logo.png',
+                width: 200,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     ' سَدَى',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: ColorsManager.kPrimaryColor),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: ColorsManager.kPrimaryColor,
+                    ),
                   ),
                   Text(
                     ' | SADA   ',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: ColorsManager.kPrimaryColor),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: ColorsManager.kPrimaryColor,
+                    ),
                   ),
                 ],
               ),
@@ -125,8 +137,11 @@ class _LoginState extends State<Login> {
                       hintText: 'البريد الإلكتروني',
                       keyboardType: TextInputType.emailAddress,
                       validator: (val) {
-                        if (val == null || val.trim().isEmpty) return 'أدخل البريد الإلكتروني';
-                        if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(val.trim())) {
+                        if (val == null || val.trim().isEmpty)
+                          return 'أدخل البريد الإلكتروني';
+                        if (!RegExp(
+                          r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        ).hasMatch(val.trim())) {
                           return 'البريد الإلكتروني غير صحيح';
                         }
                         return null;
@@ -139,14 +154,20 @@ class _LoginState extends State<Login> {
                       isObscureText: !_isPasswordVisible,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: ColorsManager.kPrimaryColor,
                         ),
-                        onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+                        onPressed: () => setState(
+                          () => _isPasswordVisible = !_isPasswordVisible,
+                        ),
                       ),
                       validator: (val) {
-                        if (val == null || val.isEmpty) return 'أدخل كلمة المرور';
-                        if (val.length < 6) return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                        if (val == null || val.isEmpty)
+                          return 'أدخل كلمة المرور';
+                        if (val.length < 6)
+                          return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
                         return null;
                       },
                     ),
@@ -156,7 +177,11 @@ class _LoginState extends State<Login> {
                         onPressed: () {},
                         child: Text(
                           'هل نسيت كلمة المرور؟',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: ColorsManager.kPrimaryColor),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: ColorsManager.kPrimaryColor,
+                          ),
                         ),
                       ),
                     ),
@@ -171,11 +196,20 @@ class _LoginState extends State<Login> {
                       children: [
                         Text(
                           'ليس لديك حساب؟',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: ColorsManager.gray),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: ColorsManager.gray,
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const Register()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const Register(),
+                              ),
+                            );
                           },
                           child: Text(
                             'تسجيل',

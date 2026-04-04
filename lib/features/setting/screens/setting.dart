@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sada/features/auth/ui/login.dart';
+import 'package:sada/features/auth/login/ui/login.dart';
 import 'package:sada/features/complaints/complaints_screen.dart';
 
 class Setting extends StatefulWidget {

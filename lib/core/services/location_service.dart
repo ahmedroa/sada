@@ -1,9 +1,11 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+/// جلب اسم مدينة المستخدم الحالية
 class LocationService {
   static Future<String> fetchCityName() async {
     try {
+      // 1. التحقق من تفعيل الخدمة والإذن
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) return 'خدمة الموقع معطلة';
 
@@ -16,6 +18,7 @@ class LocationService {
         return 'الموقع محظور، يرجى تفعيله من الإعدادات';
       }
 
+      // 2. جلب الإحداثيات الحالية
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.low,
@@ -23,6 +26,7 @@ class LocationService {
         ),
       );
 
+      // 3. تحويل الإحداثيات إلى اسم مدينة
       final placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
@@ -31,7 +35,6 @@ class LocationService {
       if (placemarks.isNotEmpty) {
         final p = placemarks.first;
         if (p.isoCountryCode != 'SA') return 'سكاكا، المملكة العربية السعودية';
-
         final city = p.locality?.isNotEmpty == true
             ? p.locality!
             : p.subAdministrativeArea ?? '';
