@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
 
-      // home: const Onboarding(),
-      home: const BottomNavBar(),
+      home: const Onboarding(),
+      // home: const BottomNavBar(),
     );
   }
 }
