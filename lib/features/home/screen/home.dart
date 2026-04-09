@@ -109,14 +109,7 @@ class _HomeState extends State<Home> {
                               ),
                               SizedBox(height: 16),
                               SizedBox(width: 140, height: 40),
-                              // MainButton(
-                              //   text: 'Live view',
-                              //   onTap: () {
-                              //     Navigator.push(context, MaterialPageRoute(builder: (context) => LiveView()));
-                              //   },
-                              //   width: 140,
-                              //   height: 40,
-                              // ),
+                        
                             ],
                           ),
                         ),

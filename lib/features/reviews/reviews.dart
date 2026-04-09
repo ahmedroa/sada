@@ -13,7 +13,7 @@ class Reviews extends StatefulWidget {
 class _ReviewsState extends State<Reviews> {
   int _selectedPeriodIndex = 0;
 
-  static const List<String> _periods = ['الأصدقاء', 'وصف الحديقه', 'الفعاليات', 'المبادرات'];
+  static const List<String> _periods = ['الأصدقاء', 'الفعاليات', 'المبادرات'];
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _ReviewsState extends State<Reviews> {
           children: [buildItem(), buildItem(), buildItem(), buildItem(), buildItem(), buildItem(), buildItem()],
         );
       case 1:
-        return Description();
+
       case 2: // الفعاليات
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 24),

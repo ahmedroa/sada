@@ -17,15 +17,15 @@ class _EventsState extends State<Events> {
 
   static const List<String> _periods = [
     'الأصدقاء',
-    'وصف الحديقه',
+    // 'وصف الحديقه',
     'الفعاليات',
     'المبادرات',
   ];
 
   static const List<Widget> _tabs = [
     Reviews(),
-        Description(),
 
+    // Description(),
     GardenDescriptionTab(),
     InitiativesTab(),
   ];
@@ -36,7 +36,7 @@ class _EventsState extends State<Events> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-                      SizedBox(height: 16),
+          SizedBox(height: 16),
 
           EventsTabBar(
             periods: _periods,

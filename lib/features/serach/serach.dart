@@ -149,6 +149,7 @@ class _SerachState extends State<Serach> {
               ],
             ),
             const SizedBox(height: 16),
+            // loading gardens
             Expanded(
               child: _isLoadingGardens
                   ? const Center(
@@ -156,6 +157,7 @@ class _SerachState extends State<Serach> {
                         color: Color(0xff0D986A),
                       ),
                     )
+                  // no gardens
                   : _gardens.isEmpty
                   ? const Center(
                       child: Text(
