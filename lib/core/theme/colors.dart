@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ColorsManager {
+  /// تدرج المؤشر / شريط التقدم (Figma linear 0٪ ← ١٠٠٪).
+  static const Color gradientMintStart = Color(0xFF2FEA9B);
+  static const Color gradientMintEnd = Color(0xFF7FDD53);
+
   static const Color primary = Color.fromARGB(255, 36, 160, 55);
   static const Color kPrimaryColor = Color(0xFF38B2AC);
   static const Color kPrimaryColo = Color(0xff0D986A);

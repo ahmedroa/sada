@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sada/features/auth/login/ui/login.dart';
 import 'package:sada/features/complaints/complaints_screen.dart';
+import 'package:sada/features/setting/screens/favorites.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -51,27 +52,31 @@ class _SettingState extends State<Setting> {
       await FirebaseAuth.instance.currentUser!.updatePhotoURL(url);
 
       // حفظ رابط الصورة في Firestore ضمن doc المستخدم
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .update({'photoUrl': url});
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'photoUrl': url,
+      });
 
       if (mounted) setState(() => _photoUrl = url);
     } catch (e) {
       debugPrint('Storage upload error: $e');
       if (mounted) {
-        final msg = e.toString().contains('unauthorized') || e.toString().contains('permission')
+        final msg =
+            e.toString().contains('unauthorized') ||
+                e.toString().contains('permission')
             ? 'غير مصرح — حدّث قواعد Firebase Storage'
-            : e.toString().contains('bucket') || e.toString().contains('object-not-found')
-                ? 'Firebase Storage غير مفعّل في المشروع'
-                : 'خطأ: ${e.toString()}';
+            : e.toString().contains('bucket') ||
+                  e.toString().contains('object-not-found')
+            ? 'Firebase Storage غير مفعّل في المشروع'
+            : 'خطأ: ${e.toString()}';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg, textAlign: TextAlign.right),
             backgroundColor: Colors.red[400],
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 6),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -214,7 +219,14 @@ class _SettingState extends State<Setting> {
           ),
 
           const SizedBox(height: 20),
-          buildItem(title: 'المفضلة', icon: 'img/f.svg'),
+          buildItem(
+            title: 'المفضلة',
+            icon: 'img/f.svg',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => Favorites()),
+            ),
+          ),
           buildItem(
             title: 'الشكاوي والإقتراحات',
             icon: 'img/qq.svg',

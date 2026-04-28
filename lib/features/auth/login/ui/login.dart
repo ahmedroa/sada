@@ -5,10 +5,17 @@ import 'package:sada/core/widgets/app_text_form_field.dart';
 import 'package:sada/core/widgets/curved_top_widget.dart';
 import 'package:sada/core/widgets/main_button.dart';
 import 'package:sada/features/auth/register/register.dart';
+import 'package:sada/features/home/screen/home_municipality.dart';
 import 'package:sada/features/home/widgets/bottom_nav_bar.dart';
 
+/// مسموح بتسجيل الدخول من مسار «البلدية» بهذا البريد فقط.
+const _municipalityAdminEmail = 'admin@sada.sa';
+
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({super.key, this.municipalityAdminOnly = false});
+
+  /// من زر البلدية: بريد المدير فقط ولا يظهر خيار التسجيل.
+  final bool municipalityAdminOnly;
 
   @override
   State<Login> createState() => _LoginState();
@@ -23,6 +30,14 @@ class _LoginState extends State<Login> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.municipalityAdminOnly) {
+      _emailController.text = _municipalityAdminEmail;
+    }
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -32,18 +47,28 @@ class _LoginState extends State<Login> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final email = _emailController.text.trim();
+    if (widget.municipalityAdminOnly &&
+        email.toLowerCase() != _municipalityAdminEmail.toLowerCase()) {
+      _showSnack('دخول البلدية مسموح لحساب المدير فقط');
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
+        email: email,
         password: _passwordController.text,
       );
 
       if (mounted) {
+        final home = widget.municipalityAdminOnly
+            ? const HomeMunicipality()
+            : const BottomNavBar();
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const BottomNavBar()),
+          MaterialPageRoute(builder: (_) => home),
           (_) => false,
         );
       }
@@ -136,12 +161,21 @@ class _LoginState extends State<Login> {
                       controller: _emailController,
                       hintText: 'البريد الإلكتروني',
                       keyboardType: TextInputType.emailAddress,
+                      readOnly: widget.municipalityAdminOnly,
                       validator: (val) {
                         if (val == null || val.trim().isEmpty)
                           return 'أدخل البريد الإلكتروني';
+                        final trimmed = val.trim();
+                        if (widget.municipalityAdminOnly) {
+                          if (trimmed.toLowerCase() !=
+                              _municipalityAdminEmail.toLowerCase()) {
+                            return 'مسموح فقط لحساب مدير البلدية';
+                          }
+                          return null;
+                        }
                         if (!RegExp(
                           r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$',
-                        ).hasMatch(val.trim())) {
+                        ).hasMatch(trimmed)) {
                           return 'البريد الإلكتروني غير صحيح';
                         }
                         return null;
@@ -190,38 +224,40 @@ class _LoginState extends State<Login> {
                       text: _isLoading ? 'جارٍ الدخول...' : 'تسجيل الدخول',
                       onTap: _isLoading ? () {} : _login,
                     ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'ليس لديك حساب؟',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: ColorsManager.gray,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const Register(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'تسجيل',
+                    if (!widget.municipalityAdminOnly) ...[
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'ليس لديك حساب؟',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
-                              color: ColorsManager.kPrimaryColor,
+                              color: ColorsManager.gray,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const Register(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'تسجيل',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: ColorsManager.kPrimaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

@@ -81,7 +81,13 @@ class AppTextFormField extends StatelessWidget {
       textAlign: textAlign ?? TextAlign.start,
       keyboardType: keyboardType,
       controller: controller,
-      style: inputTextStyle ?? TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: ColorsManager.gray),
+      style:
+          inputTextStyle ??
+          TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: ColorsManager.gray,
+          ),
       onChanged: onChanged,
       maxLength: maxLength,
       inputFormatters: inputFormatters,
@@ -95,20 +101,30 @@ class AppTextFormField extends StatelessWidget {
         suffixText: prefixText,
         counter: counter,
         isDense: true,
-        contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 20, vertical: 17),
+        contentPadding:
+            contentPadding ??
+            EdgeInsets.symmetric(horizontal: 20, vertical: 17),
         focusedBorder:
             focusedBorder ??
             UnderlineInputBorder(
-              borderSide: const BorderSide(color: ColorsManager.kPrimaryColor, width: 2),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+              borderSide: const BorderSide(
+                color: ColorsManager.kPrimaryColor,
+                width: 2,
               ),
+              borderRadius:
+                  borderRadius ??
+                  BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
             ),
         enabledBorder:
             enabledBorder ??
             UnderlineInputBorder(
-              borderSide: BorderSide(color: ColorsManager.kPrimaryColor, width: 1.5),
+              borderSide: BorderSide(
+                color: ColorsManager.kPrimaryColor,
+                width: 1.5,
+              ),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
