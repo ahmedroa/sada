@@ -363,7 +363,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
               decoration: BoxDecoration(
                 color: ColorsManager.lighterGray,
                 borderRadius: BorderRadius.circular(12),
-         ),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

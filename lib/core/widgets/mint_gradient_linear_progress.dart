@@ -38,7 +38,7 @@ class MintGradientLinearProgress extends StatelessWidget {
               children: [
                 const ColoredBox(color: ColorsManager.lighterGray),
                 Align(
-                  alignment: AlignmentDirectional.centerStart,
+                  alignment: Alignment.centerLeft,
                   child: SizedBox(
                     width: fillW,
                     height: height,

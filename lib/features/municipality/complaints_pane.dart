@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/mint_gradient_linear_progress.dart';
@@ -5,7 +6,6 @@ import 'package:sada/core/widgets/mint_gradient_linear_progress.dart';
 class ComplaintsPane extends StatefulWidget {
   const ComplaintsPane({super.key, this.shrinkWrap = false});
 
-  /// عند `true`: الارتفاع بحجم المحتوى فقط (مع تمرير من الأب).
   final bool shrinkWrap;
 
   @override
@@ -15,61 +15,86 @@ class ComplaintsPane extends StatefulWidget {
 class _ComplaintsPaneState extends State<ComplaintsPane> {
   int _filter = 0;
 
-  static const _data = [
-    _ComplaintItem(
-      title: 'إنارة الحديقة لا تعمل ليلاً',
-      sub: 'حديقة الخزامى',
-      time: 'قبل ساعتين',
-      pct: 100,
-      done: true,
-    ),
-    _ComplaintItem(
-      title: 'تسرب مياه في الممرات',
-      sub: 'حديقة النخيل',
-      time: 'أمس',
-      pct: 100,
-      done: true,
-    ),
-    _ComplaintItem(
-      title: 'تراكم النفايات في الحديقة',
-      sub: 'حديقة الدرعية',
-      time: 'قبل 5 ساعات',
-      pct: 87,
-      done: false,
-    ),
-  ];
+  String _formatTime(Timestamp? ts) {
+    if (ts == null) return '';
+    final diff = DateTime.now().difference(ts.toDate());
+    final mins = diff.inMinutes;
+    final hours = diff.inHours;
+    final days = diff.inDays;
 
-  Iterable<_ComplaintItem> get _list {
-    if (_filter == 1) return _data.where((e) => !e.done);
-    if (_filter == 2) return _data.where((e) => e.done);
-    return _data;
+    if (mins < 1) return 'الآن';
+    if (mins < 60) return 'قبل $mins دقيقة';
+    if (hours < 24) return 'قبل $hours ساعة';
+    if (days == 1) return 'أمس';
+    if (days < 7) return 'قبل $days أيام';
+    if (days < 14) return 'الأسبوع الماضي';
+    if (days < 30) return 'قبل ${(days / 7).floor()} أسابيع';
+    if (days < 60) return 'هذا الشهر';
+    if (days < 365) return 'قبل ${(days / 30).floor()} أشهر';
+    return 'قبل ${(days / 365).floor()} سنة';
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: widget.shrinkWrap,
-      physics: widget.shrinkWrap ? const NeverScrollableScrollPhysics() : null,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('Complaints and suggestions')
+          .snapshots(),
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Padding(
+            padding: EdgeInsets.all(40),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final docs = (snap.data?.docs ?? [])
+            .where((d) => (d.data() as Map)['type'] == 'شكوى')
+            .toList()
+          ..sort((a, b) {
+            final ta = (a.data() as Map)['sentAt'] as Timestamp?;
+            final tb = (b.data() as Map)['sentAt'] as Timestamp?;
+            if (ta == null || tb == null) return 0;
+            return tb.compareTo(ta);
+          });
+
+        return ListView(
+          shrinkWrap: widget.shrinkWrap,
+          physics: widget.shrinkWrap ? const NeverScrollableScrollPhysics() : null,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           children: [
-            _f('الكل', 0),
-            _sep(),
-            _f('قيد المعالجة', 1),
-            _sep(),
-            _f('مكتمل', 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _f('الكل', 0),
+                _sep(),
+                _f('قيد المعالجة', 1),
+                _sep(),
+                _f('مكتمل', 2),
+              ],
+            ),
+            const SizedBox(height: 16),
+            if (docs.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(40),
+                child: Center(
+                  child: Text('لا توجد شكاوي حتى الآن',
+                      style: TextStyle(color: Colors.grey)),
+                ),
+              )
+            else
+              ...docs.map((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                final title = data['message'] ?? '';
+                final time = _formatTime(data['sentAt'] as Timestamp?);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _complaintTile(title: title, time: time),
+                );
+              }),
           ],
-        ),
-        const SizedBox(height: 16),
-        ..._list.map(
-          (e) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _complaintTile(e),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -92,15 +117,14 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
   }
 
   Widget _sep() => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8),
-    child: Text('|', style: TextStyle(color: ColorsManager.lightGray)),
-  );
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Text('|', style: TextStyle(color: ColorsManager.lightGray)),
+      );
 
-  Widget _complaintTile(_ComplaintItem e) {
+  Widget _complaintTile({required String title, required String time}) {
     return Container(
       height: 140,
       padding: const EdgeInsets.only(left: 30, right: 30),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -109,50 +133,30 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.warning_rounded,
-                  color: ColorsManager.dark,
-                  size: 32,
-                ),
+                Icon(Icons.warning_rounded, color: ColorsManager.dark, size: 32),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        e.title,
+                        title,
                         textAlign: TextAlign.right,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              e.sub,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: ColorsManager.gray,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              e.time,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: ColorsManager.gray,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          time,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: ColorsManager.gray,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -167,34 +171,27 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
             crossAxisAlignment: CrossAxisAlignment.center,
             textDirection: TextDirection.rtl,
             children: [
-              // const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    e.done ? 'مكتمل' : 'قيد المعالجة',
+                    'قيد المعالجة',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: ColorsManager.kPrimaryColo,
                       fontSize: 12,
                     ),
                   ),
-                  Text(
-                    '${e.pct}%',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
+                  const Text(
+                    '0%',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                   ),
                 ],
               ),
               const SizedBox(width: 20),
-              Expanded(
-                child: MintGradientLinearProgress(
-                  value: e.pct / 100,
-                  height: 17,
-                ),
+              const Expanded(
+                child: MintGradientLinearProgress(value: 0.5, height: 17),
               ),
               const SizedBox(width: 30),
             ],
@@ -203,19 +200,4 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
       ),
     );
   }
-}
-
-class _ComplaintItem {
-  const _ComplaintItem({
-    required this.title,
-    required this.sub,
-    required this.time,
-    required this.pct,
-    required this.done,
-  });
-  final String title;
-  final String sub;
-  final String time;
-  final int pct;
-  final bool done;
 }
