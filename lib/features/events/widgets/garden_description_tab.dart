@@ -21,7 +21,9 @@ class GardenDescriptionTab extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             color: ColorsManager.green.withOpacity(.3),
-            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(40)),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(40),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
@@ -36,7 +38,10 @@ class GardenDescriptionTab extends StatelessWidget {
                     children: [
                       Text(
                         'الاثنين ,7 جمادئ الاول 1446\nحديقة الخزامى',
-                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Row(
@@ -47,7 +52,11 @@ class GardenDescriptionTab extends StatelessWidget {
                               onTap: () {},
                               width: btnWidth,
                               height: 36,
-                              icon: const Icon(Icons.upload_file, color: Colors.white, size: 16),
+                              icon: const Icon(
+                                Icons.upload_file,
+                                color: Colors.white,
+                                size: 16,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -57,7 +66,11 @@ class GardenDescriptionTab extends StatelessWidget {
                               onTap: () {},
                               width: btnWidth,
                               height: 36,
-                              icon: const Icon(Icons.notifications_none, color: Colors.white, size: 16),
+                              icon: const Icon(
+                                Icons.notifications_none,
+                                color: Colors.white,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ],
@@ -108,24 +121,28 @@ class GardenDescriptionTab extends StatelessWidget {
                       SizedBox(width: 6),
                       Text(
                         'الموقع',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: const SizedBox(
-                  height: 200,
-                  width: double.infinity,
-                  child: GardenMapBox(
-                    initialPosition: LatLng(29.9695, 40.2064),
-                    gardenName: 'حديقة الخزامى',
-                  ),
-                ),
-              ),
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(20),
+              //   child: const SizedBox(
+              //     height: 200,
+              //     width: double.infinity,
+              //     child: GardenMapBox(
+              //       initialPosition: LatLng(29.9695, 40.2064),
+              //       gardenName: 'حديقة الخزامى',
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

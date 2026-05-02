@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/main_button.dart';
@@ -24,6 +26,49 @@ class GardenDetails extends StatefulWidget {
 }
 
 class _GardenDetailsState extends State<GardenDetails> {
+  bool _isFavorite = false;
+  bool _loadingFav = true;
+  int _selectedStars = 0;
+
+  String get _favDocId {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
+    return '${uid}_${widget.name}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFavorite();
+  }
+
+  Future<void> _checkFavorite() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('favorites')
+        .doc(_favDocId)
+        .get();
+    if (mounted)
+      setState(() {
+        _isFavorite = doc.exists;
+        _loadingFav = false;
+      });
+  }
+
+  Future<void> _toggleFavorite() async {
+    final ref = FirebaseFirestore.instance
+        .collection('favorites')
+        .doc(_favDocId);
+    if (_isFavorite) {
+      await ref.delete();
+    } else {
+      await ref.set({
+        'uid': FirebaseAuth.instance.currentUser?.uid,
+        'gardenName': widget.name,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+    if (mounted) setState(() => _isFavorite = !_isFavorite);
+  }
+
   Future<void> _openGoogleMaps() async {
     final uri = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=${widget.lat},${widget.lng}',
@@ -32,8 +77,6 @@ class _GardenDetailsState extends State<GardenDetails> {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
-
-  int _selectedStars = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -126,17 +169,33 @@ class _GardenDetailsState extends State<GardenDetails> {
                       padding: const EdgeInsets.only(left: 30),
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Icon(
-                              Icons.favorite,
-                              size: 24,
-                              color: ColorsManager.primary,
+                        child: GestureDetector(
+                          onTap: _loadingFav ? null : _toggleFavorite,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: _loadingFav
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: ColorsManager.kPrimaryColo,
+                                      ),
+                                    )
+                                  : Icon(
+                                      _isFavorite
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      size: 24,
+                                      color: _isFavorite
+                                          ? Colors.red
+                                          : ColorsManager.primary,
+                                    ),
                             ),
                           ),
                         ),
