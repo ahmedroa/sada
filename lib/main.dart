@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
       ),
 
       // home: const HomeMunicipality(),
-      // home: const Onboarding(),
-      home: BottomNavBar(),
+      home: const Onboarding(),
+      // home: BottomNavBar(),
     );
   }
 }
