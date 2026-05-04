@@ -9,7 +9,7 @@ import 'package:sada/features/home/screen/home_municipality.dart';
 import 'package:sada/features/home/widgets/bottom_nav_bar.dart';
 
 /// مسموح بتسجيل الدخول من مسار «البلدية» بهذا البريد فقط.
-const _municipalityAdminEmail = 'admin@sada.sa';
+const _municipalityAdminEmail = 'admin@sada.com';
 
 class Login extends StatefulWidget {
   const Login({super.key, this.municipalityAdminOnly = false});
