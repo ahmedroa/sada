@@ -3,11 +3,10 @@ import 'package:sada/core/network/openai_client.dart';
 
 class OpenAiProvider {
   static const _apiKey =
-      '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';
+      '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';
 
   static OpenAiClient? _client;
 
- 
   static OpenAiClient get client {
     _client ??= OpenAiClient(
       Dio(
@@ -16,7 +15,7 @@ class OpenAiProvider {
           receiveTimeout: const Duration(seconds: 30), // مهلة استقبال الرد
           headers: {
             'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': 'Bearer $_apiKey', 
+            'Authorization': 'Bearer $_apiKey',
           },
         ),
       ),

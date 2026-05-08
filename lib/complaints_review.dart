@@ -34,10 +34,11 @@ class _ComplaintsReviewState extends State<ComplaintsReview> {
         title: Image.asset(
           'img/logo.png',
           width: 100,
-          height: 52,
-          fit: BoxFit.contain,
+          height: 100,
+          fit: BoxFit.cover,
         ),
         centerTitle: true,
+        actions: const [SizedBox(width: 56)],
       ),
       body: SingleChildScrollView(
         child: Column(

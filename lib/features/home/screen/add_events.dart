@@ -74,6 +74,8 @@ class _AddEventsState extends State<AddEvents> {
           height: 100,
           fit: BoxFit.cover,
         ),
+        centerTitle: true,
+        actions: const [SizedBox(width: 56)],
       ),
       body: Form(
         key: _formKey,

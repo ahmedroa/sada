@@ -14,8 +14,15 @@ class GardenService {
       final data = doc.data();
       return {
         'name': data['name'] ?? '',
-        'lat': (data['lat'] as num).toDouble(),
-        'lng': (data['lng'] as num).toDouble(),
+        'lat': (data['lat'] as num?)?.toDouble() ?? 0.0,
+        'lng': (data['lng'] as num?)?.toDouble() ?? 0.0,
+        'description': data['description'] ?? '',
+        'location': data['location'] ?? '',
+        'openingHours': data['openingHours'] ?? '',
+        'facilities': data['facilities'] ?? '',
+        'area': data['area'] ?? '',
+        'rating': data['rating'] ?? '',
+        'image': data['image'] ?? '',
       };
     }).toList();
 

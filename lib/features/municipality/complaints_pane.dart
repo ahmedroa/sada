@@ -39,6 +39,7 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('Complaints and suggestions')
+          .orderBy('sentAt', descending: true)
           .snapshots(),
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
@@ -50,17 +51,13 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
 
         final docs = (snap.data?.docs ?? [])
             .where((d) => (d.data() as Map)['type'] == 'شكوى')
-            .toList()
-          ..sort((a, b) {
-            final ta = (a.data() as Map)['sentAt'] as Timestamp?;
-            final tb = (b.data() as Map)['sentAt'] as Timestamp?;
-            if (ta == null || tb == null) return 0;
-            return tb.compareTo(ta);
-          });
+            .toList();
 
         return ListView(
           shrinkWrap: widget.shrinkWrap,
-          physics: widget.shrinkWrap ? const NeverScrollableScrollPhysics() : null,
+          physics: widget.shrinkWrap
+              ? const NeverScrollableScrollPhysics()
+              : null,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           children: [
             Row(
@@ -78,8 +75,10 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
               const Padding(
                 padding: EdgeInsets.all(40),
                 child: Center(
-                  child: Text('لا توجد شكاوي حتى الآن',
-                      style: TextStyle(color: Colors.grey)),
+                  child: Text(
+                    'لا توجد شكاوي حتى الآن',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
               )
             else
@@ -117,9 +116,9 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
   }
 
   Widget _sep() => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Text('|', style: TextStyle(color: ColorsManager.lightGray)),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 8),
+    child: Text('|', style: TextStyle(color: ColorsManager.lightGray)),
+  );
 
   Widget _complaintTile({required String title, required String time}) {
     return Container(
@@ -133,7 +132,11 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.warning_rounded, color: ColorsManager.dark, size: 32),
+                Icon(
+                  Icons.warning_rounded,
+                  color: ColorsManager.dark,
+                  size: 32,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -145,7 +148,9 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
@@ -201,3 +206,4 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
     );
   }
 }
+

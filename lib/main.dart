@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sada/features/home/screen/home_municipality.dart';
 import 'package:sada/features/home/widgets/bottom_nav_bar.dart';
 import 'package:sada/features/onboarding/onboarding.dart';
+import 'package:sada/features/onboarding/start.dart';
 import 'package:sada/firebase_options.dart';
 
 void main() async {
@@ -37,8 +38,14 @@ class MyApp extends StatelessWidget {
       ),
 
       home: const HomeMunicipality(),
-      // home: const Onboarding(),
+      // home: const StartPage(),
       // home: BottomNavBar(),
     );
   }
 }
+
+
+
+// بخصوص الكل وقيد المراجعه 
+// ترتيب الشكاوي على حسب التاريخ 
+// ال ai يجاوب على كل اسئلة ال ai 

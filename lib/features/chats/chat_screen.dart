@@ -21,6 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> _history = [];
 
   bool _isLoading = false;
+  bool _showHint = false;
   double? _userLat;
   double? _userLng;
 
@@ -28,7 +29,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _fetchLocationIfNeeded();
-    _sendToGpt(widget.initialQuestion);
+    if (widget.initialQuestion.trim().isEmpty) {
+      _showHint = true;
+    } else {
+      _sendToGpt(widget.initialQuestion);
+    }
   }
 
   Future<void> _fetchLocationIfNeeded() async {
@@ -47,6 +52,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (userText.trim().isEmpty) return;
 
     setState(() {
+      _showHint = false;
       _messages.add(_ChatMessage(text: userText, isUser: true));
       _isLoading = true;
     });
@@ -135,14 +141,56 @@ class _ChatScreenState extends State<ChatScreen> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: ColorsManager.kPrimaryColo),
             ),
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                itemCount: _messages.length + (_isLoading ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == _messages.length) return _buildTypingIndicator();
-                  return _buildBubble(_messages[index]);
-                },
+              child: Stack(
+                children: [
+                  if (_showHint)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                          decoration: BoxDecoration(
+                            color: const Color(0xffF0FAF4),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: const Color(0xff0D986A)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            'يمكنك سؤالي عن أي شيء يتعلق بالمنتزهات والحدائق، مثل:\n\n'
+                            '🌿 أفضل أوقات الزيارة ونصائح التخطيط\n'
+                            '🌳 النباتات والأشجار وأنواعها\n'
+                            '🏃 الأنشطة الرياضية والترفيهية\n'
+                            '☀️ نصائح الطقس وجودة الهواء\n'
+                            '🛡️ السلامة والصحة داخل المنتزه\n'
+                            '♻️ الاستدامة والمحافظة على البيئة\n'
+                            '📍 معلومات عن حدائق بعينها في التطبيق',
+                            textAlign: TextAlign.center,
+                            textDirection: TextDirection.rtl,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              height: 2,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    itemCount: _messages.length + (_isLoading ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == _messages.length) return _buildTypingIndicator();
+                      return _buildBubble(_messages[index]);
+                    },
+                  ),
+                ],
               ),
             ),
             _buildInputBar(),

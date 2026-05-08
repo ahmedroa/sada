@@ -56,9 +56,12 @@ class _HomeState extends State<Home> {
             Row(
               children: [
                 Icon(Icons.location_on_outlined),
-                SizedBox(width: 8),
+                // SizedBox(width: 8),
                 Expanded(
-                  child: Text(_locationText, overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    'الجوف - المملكة العربية السعودية',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -109,7 +112,6 @@ class _HomeState extends State<Home> {
                               ),
                               SizedBox(height: 16),
                               SizedBox(width: 140, height: 40),
-                        
                             ],
                           ),
                         ),

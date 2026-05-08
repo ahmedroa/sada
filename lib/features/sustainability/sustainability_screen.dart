@@ -62,8 +62,73 @@ class _SustainabilityScreenState extends State<SustainabilityScreen> {
         .toList();
   }
 
-  void _onSubmit() {
-    // TODO: handle submit
+  Future<void> _onSubmit() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Color(0xff0D986A)),
+      ),
+    );
+
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      _showResultDialog(success: true);
+    } catch (_) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      _showResultDialog(success: false);
+    }
+  }
+
+  void _showResultDialog({required bool success}) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              success ? Icons.check_circle_rounded : Icons.cancel_rounded,
+              color: success ? const Color(0xff0D986A) : Colors.red,
+              size: 64,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              success ? 'تم إرسال التقييم بنجاح' : 'فشل إرسال التقييم',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: success ? const Color(0xff0D986A) : Colors.red,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              success
+                  ? 'شكراً لمساهمتك في تحسين مؤشرات الإستدامة'
+                  : 'حدث خطأ، يرجى المحاولة مرة أخرى',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'حسناً',
+              style: TextStyle(
+                color: success ? const Color(0xff0D986A) : Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
