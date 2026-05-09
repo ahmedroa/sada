@@ -14,6 +14,14 @@ class ComplaintsReview extends StatefulWidget {
 class _ComplaintsReviewState extends State<ComplaintsReview> {
   /// false = الشكاوي، true = الاقتراحات
   bool _suggestionsTab = false;
+  int _complaintsTotal = 0;
+  int _suggestionsTotal = 0;
+
+  static const int _previewLimit = 3;
+
+  bool get _hasMore => _suggestionsTab
+      ? _suggestionsTotal > _previewLimit
+      : _complaintsTotal > _previewLimit;
 
   @override
   Widget build(BuildContext context) {
@@ -70,26 +78,31 @@ class _ComplaintsReviewState extends State<ComplaintsReview> {
               switchInCurve: Curves.easeOut,
               switchOutCurve: Curves.easeIn,
               child: _suggestionsTab
-                  ? const SuggestionsPane(
-                      key: ValueKey('sug'),
+                  ? SuggestionsPane(
+                      key: const ValueKey('sug'),
                       shrinkWrap: true,
+                      limit: _previewLimit,
+                      onTotal: (n) => setState(() => _suggestionsTotal = n),
                     )
-                  : const ComplaintsPane(
-                      key: ValueKey('com'),
+                  : ComplaintsPane(
+                      key: const ValueKey('com'),
                       shrinkWrap: true,
+                      limit: _previewLimit,
+                      onTotal: (n) => setState(() => _complaintsTotal = n),
                     ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 140, right: 140),
-              child: MainButton(
-                color: Color(0xff34C759),
-                text: 'عرض المزيد',
-                onTap: () {},
-                height: 52,
-                borderRadius: 12,
-                fontSize: 16,
+            if (_hasMore)
+              Padding(
+                padding: const EdgeInsets.only(left: 140, right: 140),
+                child: MainButton(
+                  color: const Color(0xff34C759),
+                  text: 'عرض المزيد',
+                  onTap: () {},
+                  height: 52,
+                  borderRadius: 12,
+                  fontSize: 16,
+                ),
               ),
-            ),
           ],
         ),
       ),

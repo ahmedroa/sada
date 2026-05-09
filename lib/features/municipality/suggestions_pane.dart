@@ -4,9 +4,16 @@ import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/mint_gradient_linear_progress.dart';
 
 class SuggestionsPane extends StatefulWidget {
-  const SuggestionsPane({super.key, this.shrinkWrap = false});
+  const SuggestionsPane({
+    super.key,
+    this.shrinkWrap = false,
+    this.limit,
+    this.onTotal,
+  });
 
   final bool shrinkWrap;
+  final int? limit;
+  final void Function(int total)? onTotal;
 
   @override
   State<SuggestionsPane> createState() => _SuggestionsPaneState();
@@ -55,7 +62,7 @@ class _SuggestionsPaneState extends State<SuggestionsPane> {
         }
 
         final q = _search.text.trim();
-        final docs = (snap.data?.docs ?? [])
+        final allDocs = (snap.data?.docs ?? [])
             .where((d) {
               final data = d.data() as Map<String, dynamic>;
               if (data['type'] != 'إقتراح') return false;
@@ -69,6 +76,14 @@ class _SuggestionsPaneState extends State<SuggestionsPane> {
             if (ta == null || tb == null) return 0;
             return tb.compareTo(ta);
           });
+
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => widget.onTotal?.call(allDocs.length),
+        );
+
+        final docs = widget.limit != null
+            ? allDocs.take(widget.limit!).toList()
+            : allDocs;
 
         return ListView(
           shrinkWrap: widget.shrinkWrap,

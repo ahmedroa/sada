@@ -141,6 +141,19 @@ class GardenDescriptionTab extends StatelessWidget {
                                   width: imgSize,
                                   height: imgSize,
                                   fit: BoxFit.cover,
+                                  loadingBuilder: (_, child, progress) {
+                                    if (progress == null) return child;
+                                    return SizedBox(
+                                      width: imgSize,
+                                      height: imgSize,
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Color(0xff0D986A),
+                                          strokeWidth: 2.5,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   errorBuilder: (_, __, ___) => Image.asset(
                                     'img/rectangle.png',
                                     width: imgSize,

@@ -4,9 +4,16 @@ import 'package:sada/core/theme/colors.dart';
 import 'package:sada/core/widgets/mint_gradient_linear_progress.dart';
 
 class ComplaintsPane extends StatefulWidget {
-  const ComplaintsPane({super.key, this.shrinkWrap = false});
+  const ComplaintsPane({
+    super.key,
+    this.shrinkWrap = false,
+    this.limit,
+    this.onTotal,
+  });
 
   final bool shrinkWrap;
+  final int? limit;
+  final void Function(int total)? onTotal;
 
   @override
   State<ComplaintsPane> createState() => _ComplaintsPaneState();
@@ -49,9 +56,17 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
           );
         }
 
-        final docs = (snap.data?.docs ?? [])
+        final allDocs = (snap.data?.docs ?? [])
             .where((d) => (d.data() as Map)['type'] == 'شكوى')
             .toList();
+
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => widget.onTotal?.call(allDocs.length),
+        );
+
+        final docs = widget.limit != null
+            ? allDocs.take(widget.limit!).toList()
+            : allDocs;
 
         return ListView(
           shrinkWrap: widget.shrinkWrap,
@@ -82,7 +97,7 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
                 ),
               )
             else
-              ...docs.map((doc) {
+              ...docs.toList().map((doc) {
                 final data = doc.data() as Map<String, dynamic>;
                 final title = data['message'] ?? '';
                 final time = _formatTime(data['sentAt'] as Timestamp?);
