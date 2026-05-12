@@ -21,6 +21,7 @@ class SuggestionsPane extends StatefulWidget {
 
 class _SuggestionsPaneState extends State<SuggestionsPane> {
   final _search = TextEditingController();
+  int? _lastTotal;
 
   @override
   void dispose() {
@@ -77,9 +78,12 @@ class _SuggestionsPaneState extends State<SuggestionsPane> {
             return tb.compareTo(ta);
           });
 
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => widget.onTotal?.call(allDocs.length),
-        );
+        if (_lastTotal != allDocs.length) {
+          _lastTotal = allDocs.length;
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => widget.onTotal?.call(allDocs.length),
+          );
+        }
 
         final docs = widget.limit != null
             ? allDocs.take(widget.limit!).toList()

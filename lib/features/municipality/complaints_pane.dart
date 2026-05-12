@@ -21,6 +21,7 @@ class ComplaintsPane extends StatefulWidget {
 
 class _ComplaintsPaneState extends State<ComplaintsPane> {
   int _filter = 0;
+  int? _lastTotal;
 
   String _formatTime(Timestamp? ts) {
     if (ts == null) return '';
@@ -60,9 +61,12 @@ class _ComplaintsPaneState extends State<ComplaintsPane> {
             .where((d) => (d.data() as Map)['type'] == 'شكوى')
             .toList();
 
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => widget.onTotal?.call(allDocs.length),
-        );
+        if (_lastTotal != allDocs.length) {
+          _lastTotal = allDocs.length;
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => widget.onTotal?.call(allDocs.length),
+          );
+        }
 
         final docs = widget.limit != null
             ? allDocs.take(widget.limit!).toList()
