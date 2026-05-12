@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      home: const HomeMunicipality(),
-      // home: const StartPage(),
+      // home: const HomeMunicipality(),
+      home: const StartPage(),
       // home: BottomNavBar(),
     );
   }
@@ -46,6 +46,4 @@ class MyApp extends StatelessWidget {
 
 
 
-// بخصوص الكل وقيد المراجعه 
-// ترتيب الشكاوي على حسب التاريخ 
 // ال ai يجاوب على كل اسئلة ال ai 

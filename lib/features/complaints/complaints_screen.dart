@@ -239,7 +239,19 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
     final isSelected = _selectedType == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedType = index),
+        onTap: () {
+          if (_selectedType == index) return;
+          setState(() {
+            _selectedType = index;
+            _nameController.clear();
+            _idController.clear();
+            _emailController.clear();
+            _phoneController.clear();
+            _messageController.clear();
+            _attachedFile = null;
+            _attachedFileName = null;
+          });
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(vertical: 12),
