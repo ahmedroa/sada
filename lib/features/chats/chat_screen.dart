@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sada/core/services/chat_service.dart';
 import 'package:sada/core/theme/colors.dart';
-import 'package:geolocator/geolocator.dart';
 
 class ChatScreen extends StatefulWidget {
   final String initialQuestion;
@@ -22,31 +21,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool _isLoading = false;
   bool _showHint = false;
-  double? _userLat;
-  double? _userLng;
 
   @override
   void initState() {
     super.initState();
-    _fetchLocationIfNeeded();
     if (widget.initialQuestion.trim().isEmpty) {
       _showHint = true;
     } else {
       _sendToGpt(widget.initialQuestion);
-    }
-  }
-
-  Future<void> _fetchLocationIfNeeded() async {
-    if (widget.initialQuestion.contains('اقرب حديقة')) {
-      try {
-        final position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.low,
-          ),
-        );
-        _userLat = position.latitude;
-        _userLng = position.longitude;
-      } catch (_) {}
     }
   }
 
@@ -64,8 +46,6 @@ class _ChatScreenState extends State<ChatScreen> {
       final reply = await ChatService.sendMessage(
         history: List.from(_history),
         userMessage: userText,
-        userLat: _userLat,
-        userLng: _userLng,
       );
 
       _history.add({'role': 'user', 'content': userText});
